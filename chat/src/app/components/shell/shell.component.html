@@ -1,5 +1,39 @@
-<form #myForm="ngForm" (ngSubmit)="onClickSubmit()">
+<!-- <form #myForm="ngForm" (ngSubmit)="onClickSubmit()">
     <label for="username">Introduce tu nombre de usuario: </label>
     <input type="text" [(ngModel)]="username" id="username" name="username" placeholder="username" autocomplete="off" required>
     <button type="submit" [disabled]="!myForm.valid">Submit</button>
-  </form>
+  </form> -->
+
+  <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <div class="container">
+    <div class="screen">
+      <div class="screen__content">
+        <form class="login" #myForm="ngForm" (ngSubmit)="onClickSubmit()">
+          <div class="login__field">
+            <i class="login__icon fa fa-user"></i>
+            <input type="text" [(ngModel)]="username" id="username" name="username" autocomplete="off" class="login__input" placeholder="User name" required>
+          </div>
+          <button type="submit" class="button login__submit" [disabled]="!myForm.valid">
+            <span class="button__text">Log In Now</span>
+            <i class="button__icon fa fa-chevron-right"></i>
+          </button>			
+        </form>
+        <button class="boton" (click)="toChat()" [disabled]="!username">Take me to the Chat!</button>
+        <div class="social-login">
+          <h3>log in via</h3>
+          <div class="social-icons">
+            <a href="#" class="social-login__icon fa fa-instagram"></a>
+            <a href="#" class="social-login__icon fa fa-facebook"></a>
+            <a href="#" class="social-login__icon fa fa-twitter"></a>
+          </div>
+        </div>
+      </div>
+      <div class="screen__background">
+        <span class="screen__background__shape screen__background__shape4"></span>
+        <span class="screen__background__shape screen__background__shape3"></span>		
+        <span class="screen__background__shape screen__background__shape2"></span>
+        <span class="screen__background__shape screen__background__shape1"></span>
+      </div>		
+    </div>
+  </div>

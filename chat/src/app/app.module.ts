@@ -12,6 +12,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
+import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatCardModule } from "@angular/material/card";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatIconModule } from "@angular/material/icon";
+import { MatListModule } from "@angular/material/list";
+
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
 const routes : Routes = [
@@ -34,7 +40,12 @@ const routes : Routes = [
     RouterModule.forRoot(routes),
     SocketIoModule.forRoot(config),
     BrowserAnimationsModule,
-    NgbModule
+    NgbModule,
+    MatSidenavModule,
+    MatCardModule,
+    MatTabsModule,
+    MatIconModule,
+    MatListModule
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent]

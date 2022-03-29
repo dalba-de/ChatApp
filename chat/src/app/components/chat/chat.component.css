@@ -1,0 +1,137 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.mat-drawer.mat-drawer-side {
+    padding: 0 5px;
+}
+ 
+.empty-conversation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.icon_display {
+    font-size: 15px;
+    color: red;
+}
+ 
+.conversation-header h2, .conversation-header p {
+    align-items: center;
+    display: flex;
+}
+ 
+.text-center {
+    text-align: center;
+    width: 100%;
+}
+ 
+.conversation-history.mat-list {
+    height: calc(100% - 180px);
+    overflow-x: scroll;
+    position: absolute;
+    width: 100%;
+}
+ 
+.conversation-history.mat-list p {
+    margin: 0;
+}
+ 
+.empty-conversation h1 {
+    margin: 0;
+}
+
+.tabs {
+    background-color: blueviolet;
+}
+ 
+.conversations .mat-list-item {
+    cursor: pointer;
+}
+
+.conversations .no_event {
+    color: black;
+}
+
+.conversations .event {
+    color: red;
+}
+
+.conversations .no_in_group {
+    color: grey;
+}
+ 
+.mat-card {
+    height: 100%;
+    padding: 0 24px;
+    overflow: scroll;
+}
+.conversation-input {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #fafafa;
+}
+ 
+section .mat-list .mat-list-avatar{
+    width: 25px;
+    height: 25px;
+}
+ 
+.mat-list-avatar {
+    margin: 0 5px;
+}
+ 
+.right {
+    text-align: right;
+}
+ 
+.full-width {
+    width: 100%;
+}
+ 
+.full-width .mat-icon {
+    cursor: pointer;
+}
+
+.message {
+    padding: 10px !important;
+    transition: all 250ms ease-in-out !important;
+    border-radius: 10px !important;
+    margin-bottom: 4px !important;
+}
+.my_message {
+    background-color: lightgreen !important;
+    color: #ffffff !important;
+}
+.my_message .user_name, .my_message .time {
+    color: #1e2023;
+}
+.other_message {
+    background-color: lightgrey !important;
+    color: #ffffff !important;
+}
+.other_message .user_name, .other_message .time {
+    color: #f5f6f9;
+}
+.time {
+    float: right;
+    font-size: small;
+}
+.message_row {
+    background-color: #fff;
+}
+
+.title {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 1em;
+}

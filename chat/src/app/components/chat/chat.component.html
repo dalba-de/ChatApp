@@ -1,11 +1,23 @@
-<p>chat works!</p>
-
-<ion-grid>
-    <ion-row>
-      <ion-col size="9" class="message">
-        <span class="user_name">David</span><br>
-        <span>Como estamos peñita</span>
-        <div class="time">ayer a las 3</div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+<!-- Contenedor completo -->
+<mat-sidenav-container class="container">
+  <!-- Sidenav izquierdo, con pestañas para salas y usuarios -->
+  <mat-sidenav mode="side" opened>
+    <mat-card>
+      <!-- Grupo de 2 pestañas, salas y personas -->
+      <mat-tab-group>
+        <!-- Pestaña de personas -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon matListIcon>people</mat-icon>
+          </ng-template>
+          <mat-list class="conversations">
+            <mat-list-item *ngFor="let user of users">
+              <mat-icon matListIcon style="font-size: 15px;">person</mat-icon>
+              <p>{{users.name}}</p>
+            </mat-list-item>
+          </mat-list>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card>
+  </mat-sidenav>
+</mat-sidenav-container>
