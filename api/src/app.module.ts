@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ChatGateway } from './chat/chat.gateway';
+import { ChatGateway } from './chat.gateway';
+import { ConfigModule } from "@nestjs/config";
+import { TypeOrmModule } from "@nestjs/typeorm";
 import { UsersModule } from './users/users.module';
-import { GroupsModule } from './groups/groups.module';
+
 
 @Module({
   imports: [
@@ -20,8 +20,7 @@ import { GroupsModule } from './groups/groups.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true
     }),
-    UsersModule,
-    GroupsModule
+    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService, ChatGateway],

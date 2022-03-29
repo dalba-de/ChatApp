@@ -1,0 +1,5 @@
+<form #myForm="ngForm" (ngSubmit)="onClickSubmit()">
+    <label for="username">Introduce tu nombre de usuario: </label>
+    <input type="text" [(ngModel)]="username" id="username" name="username" placeholder="username" autocomplete="off" required>
+    <button type="submit" [disabled]="!myForm.valid">Submit</button>
+  </form>

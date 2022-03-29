@@ -17,15 +17,15 @@ services:
         ports: 
             - 3000:3000
 
-    chatroom:
+    chat:
         build:
             dockerfile: Dockerfile
-            context: ./chatroom
+            context: ./chat
             target: development
         command: npm run start
         volumes: 
-            - ./chatroom:/dalba-de/chatroom/src/app
-            - /dalba-de/chatroom/src/app/node_modules
+            - ./chat:/dalba-de/chat/src/app
+            - /dalba-de/chat/src/app/node_modules
         ports: 
             - 4200:4200
         links:
