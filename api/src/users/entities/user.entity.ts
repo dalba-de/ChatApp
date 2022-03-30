@@ -5,6 +5,9 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number
 
+    @Column()
+    socket: string;
+
     @Column({unique: true})
     name: string;
 }

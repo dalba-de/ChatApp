@@ -5,6 +5,18 @@
     <mat-card>
       <!-- Grupo de 2 pestañas, salas y personas -->
       <mat-tab-group>
+        <!-- Pestaña de salas -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon matListIcon>forum</mat-icon>
+          </ng-template>
+          <mat-list class="conversations">
+            <mat-list-item>
+              <mat-icon matListIcon style="font-size: 15px;">public</mat-icon>
+              <p>General</p>
+            </mat-list-item>
+          </mat-list>
+        </mat-tab>
         <!-- Pestaña de personas -->
         <mat-tab>
           <ng-template mat-tab-label>
@@ -13,7 +25,7 @@
           <mat-list class="conversations">
             <mat-list-item *ngFor="let user of users">
               <mat-icon matListIcon style="font-size: 15px;">person</mat-icon>
-              <p>{{users.name}}</p>
+              <p>{{user}}</p>
             </mat-list-item>
           </mat-list>
         </mat-tab>

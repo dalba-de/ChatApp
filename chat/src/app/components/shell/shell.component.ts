@@ -12,6 +12,7 @@ export class ShellComponent implements OnInit {
 
   username: string = '';
   errorMsg: string = '';
+  user: any = {};
 
   constructor(private router : Router, private apiService : ApiService) { }
 
@@ -22,21 +23,25 @@ export class ShellComponent implements OnInit {
   }
 
   onClickSubmit() {
-    let newUser : IUser = {
-      name : this.username
-    };
+    // let newUser : IUser = {
+    //   name : this.username
+    // };
 
-    this.apiService.createUser(newUser).subscribe(
-      res => {
-        console.log('HTTP response', res);
-        sessionStorage.setItem('username', this.username);
-        this.router.navigate(['chat']);
-      },
-      err => {
-        this.errorMsg = err.error.message;
-        window.alert("Nombre en uso, elija uno diferente");
-      },
-    )
+    // this.apiService.createUser(newUser).subscribe(
+    //   res => {
+    //     this.user = res;
+    //     console.log('HTTP response', res);
+    //     sessionStorage.setItem('username', this.username);
+    //     sessionStorage.setItem('id', this.user.id);
+    //     this.router.navigate(['chat']);
+    //   },
+    //   err => {
+    //     this.errorMsg = err.error.message;
+    //     window.alert("Nombre en uso, elija uno diferente");
+    //   },
+    // )
+    sessionStorage.setItem('username', this.username);
+    this.router.navigate(['chat']);
   }
 
   toChat() {
