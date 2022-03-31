@@ -5,6 +5,7 @@ import { ChatGateway } from './chat.gateway';
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UsersModule } from './users/users.module';
+import { MessagesModule } from './messages/messages.module';
 
 
 @Module({
@@ -20,7 +21,8 @@ import { UsersModule } from './users/users.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true
     }),
-    UsersModule
+    UsersModule,
+    MessagesModule
   ],
   controllers: [AppController],
   providers: [AppService, ChatGateway],
