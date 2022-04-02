@@ -9,9 +9,15 @@ export class Message {
     @Column()
     message: string
 
+    @Column()
+    room: string
+
     @ManyToOne(() => User, (user) => user.messages, {
         cascade: true,
         eager: true
     })
     user: User;
+
+    @Column({ type: "timestamptz", default: () => 'CURRENT_TIMESTAMP' })
+    time: Date;
 }

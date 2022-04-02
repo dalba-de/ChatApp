@@ -32,4 +32,60 @@
       </mat-tab-group>
     </mat-card>
   </mat-sidenav>
+
+  <!-- Barra lateral derecha correspondiente a personas en cada sala -->
+  <mat-sidenav position="end" mode="side">
+
+  </mat-sidenav>
+
+  <!-- Sección de escritura sin sala seleccionada -->
+  <!-- <section class="empty-conversation">
+    <h1 class="mat-display-1">Select a conversation from the left to start chatting</h1>
+  </section> -->
+
+  <!-- Cabecera sección escritura -->
+  <section>
+    <div class="mat-typography conversation-header">
+      <h2>
+        <mat-icon>forum</mat-icon>
+        General
+      </h2>
+      <p>
+        <mat-icon>account_circle</mat-icon>
+        {{(allUsers).length}} Members
+    </p>
+    </div>
+
+    <!-- Display de mensajes -->
+    <mat-divider></mat-divider>
+    <mat-list dense class="conversation-history mat-typography">
+      <ion-grid>
+        <ion-row *ngFor="let message of messages['General']">
+          <ion-col size="9" *ngIf="message.user.name !== username" class="message"
+                  [ngClass]="{'my_message': message.user.name === username, 'other_message': message.user.name !== username}">
+            <span class="user_name">{{ message.user.name }}:</span><br>
+            <span>{{ message.message }}</span>
+            <div class="time">{{message.time | date:'dd.MM HH:mm'}}</div>
+          </ion-col>
+    
+          <ion-col offset="3" size="9" *ngIf="message.user.name === username" class="message"
+                  [ngClass]="{'my_message': message.user.name === username, 'other_message': message.user.name !== username}">
+            <span class="user_name">{{ message.user.name }}:</span><br>
+            <span>{{ message.message }}</span>
+            <div class="time">{{message.time | date:'dd.MM HH:mm'}}</div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </mat-list>
+    <!-- Input de escritura -->
+    <div class="conversation-input">
+      <mat-divider></mat-divider>
+      <mat-form-field class="full-width">
+        <input matInput placeholder="Start chatting..." (keyup.enter)="sendChatMessage()" name="text" [(ngModel)]="text" autocomplete="off">
+        <mat-icon matSuffix (click)="sendChatMessage()">send</mat-icon>
+        <!-- <mat-icon matSuffix (click)="playAudio()">notifications</mat-icon> -->
+      </mat-form-field>
+    </div>
+  </section>
+
 </mat-sidenav-container>

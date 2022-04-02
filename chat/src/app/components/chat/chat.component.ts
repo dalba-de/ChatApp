@@ -15,8 +15,11 @@ export class ChatComponent implements OnInit {
 
   users: string[] = [];
   allUsers: any = [];
+  allMessages: any = [];
   username: string = "";
   id: number = 0;
+  messages: any = {};
+  text: string = '';
 
   constructor(private socket : Socket, private apiService : ApiService) { }
 
@@ -36,6 +39,15 @@ export class ChatComponent implements OnInit {
           this.users.push(this.allUsers[i].name);
       }
       console.log(this.users);
+    })
+
+    // Comprobación de mensajes
+    this.apiService.getMessages().subscribe((result) => {
+      this.allMessages = result;
+      for (let i = 0; i < this.allMessages.length; i++) {
+        this.messages[this.allMessages[i].room].push(this.allMessages[i])
+      }
+      console.log(this.messages);
     })
 
     // Cuando se conecta el socket
@@ -63,7 +75,12 @@ export class ChatComponent implements OnInit {
           // Si no es la primera vez actualizamos el socket
           this.socket.emit('update-user', {nickname: this.username, id: this.id});
         }
-      })    
+      })
+      // Comprobamos los mensajes que hay ... IMPLEMENTAR
+      let value: string[] = [];
+      Object.assign(this.messages, {General: value});
+      let value1: string[] = [];
+      Object.assign(this.messages, {Tardis: value1});
     })
 
     // Salta cada vez que entra un nuevo usuario al chat
@@ -79,6 +96,34 @@ export class ChatComponent implements OnInit {
         console.log(this.users);
       })
     })
+
+    // Salta cuando se recibe un nuevo mensaje del servidor
+    this.socket.on('chatToClient', (msg) => {
+      this.receiveChatMessage(msg);
+    })
+  }
+
+  sendChatMessage() {
+    this.socket.emit('chatToServer', { sender: this.username, room: 'General', message: this.text });
+    this.text = "";
+  }
+
+  receiveChatMessage(msg) {
+    // const arr = msg.room;
+    // this.messages[arr].push(msg);
+    //ARREGLARLO! MIRAR DE QUE ROOM VIENE Y BORRAR SOLO ESA EN LINEA 116
+    console.log(this.messages)
+    this.messages[msg.room] = []
+    console.log(this.messages)
+    this.apiService.getMessages().subscribe((result) => {
+      this.allMessages = result;
+      for (let i = 0; i < this.allMessages.length; i++) {
+        this.messages[this.allMessages[i].room].push(this.allMessages[i])
+      }
+    })
+
+    // console.log(msg)
+    // this.messages[msg.room].push(msg);
   }
 
 }

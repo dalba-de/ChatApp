@@ -22,4 +22,8 @@ export class ApiService {
   public getGroups() {
     return this.httpClient.get(`${this.API_SERVER}/groups/`);
   }
+
+  public getMessages() {
+    return this.httpClient.get(`${this.API_SERVER}/messages`);
+  }
 }
