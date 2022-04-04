@@ -56,19 +56,20 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
   @SubscribeMessage('chatToServer')
   async handleMessage(client: Socket, message: {sender: string, room: string, message: string}) {
-    let users : any = await this.usersService.findAll();
-    let id : number;  
-    for (let i = 0; i < users.length; i++) {
-      if (users[i].name === message.sender)
-        id = users[i].id;
-    }
+    // let users : any = await this.usersService.findAll();
+    // let id : number;  
+    // for (let i = 0; i < users.length; i++) {
+    //   if (users[i].name === message.sender)
+    //     id = users[i].id;
+    // }
+    let user : any = await this.usersService.findByName(message.sender);
 
     let newMsg: any = {
-      user: id,
+      user: user.id,
       room: 'General',
       message: message.message
     }
-    this.messagesService.create(newMsg);
+    await this.messagesService.create(newMsg);
 
     this.wss.emit('chatToClient', {text: message.message, room: message.room, from: message.sender, created: new Date()});
   }

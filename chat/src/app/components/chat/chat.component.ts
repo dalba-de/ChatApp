@@ -3,6 +3,7 @@ import { Socket } from "ngx-socket-io";
 import { IUser } from "./user";
 import { MatSidenav } from "@angular/material/sidenav";
 import { ApiService } from "../../services/api.service";
+import { IonContent } from "@ionic/angular";
 
 @Component({
   selector: 'app-chat',
@@ -12,6 +13,7 @@ import { ApiService } from "../../services/api.service";
 export class ChatComponent implements OnInit {
 
   @ViewChild(MatSidenav) sidenav!: MatSidenav;
+  @ViewChild(IonContent, {static: false}) content!: IonContent;
 
   users: string[] = [];
   allUsers: any = [];
@@ -24,6 +26,8 @@ export class ChatComponent implements OnInit {
   constructor(private socket : Socket, private apiService : ApiService) { }
 
   ngOnInit(): void {
+
+    // this.scrollToBottomOnInit();
     // Añadimos username desde la sesion
     this.username = sessionStorage.getItem('username')!;
     
@@ -108,14 +112,14 @@ export class ChatComponent implements OnInit {
     this.text = "";
   }
 
-  receiveChatMessage(msg) {
+  async receiveChatMessage(msg) {
     // const arr = msg.room;
     // this.messages[arr].push(msg);
     //ARREGLARLO! MIRAR DE QUE ROOM VIENE Y BORRAR SOLO ESA EN LINEA 116
-    console.log(this.messages)
+    console.log(msg)
     this.messages[msg.room] = []
-    console.log(this.messages)
-    this.apiService.getMessages().subscribe((result) => {
+    await this.apiService.getMessages().subscribe((result) => {
+      console.log(result)
       this.allMessages = result;
       for (let i = 0; i < this.allMessages.length; i++) {
         this.messages[this.allMessages[i].room].push(this.allMessages[i])
@@ -125,5 +129,5 @@ export class ChatComponent implements OnInit {
     // console.log(msg)
     // this.messages[msg.room].push(msg);
   }
-
 }
+

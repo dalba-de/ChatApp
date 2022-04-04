@@ -59,23 +59,26 @@
     <!-- Display de mensajes -->
     <mat-divider></mat-divider>
     <mat-list dense class="conversation-history mat-typography">
-      <ion-grid>
-        <ion-row *ngFor="let message of messages['General']">
-          <ion-col size="9" *ngIf="message.user.name !== username" class="message"
-                  [ngClass]="{'my_message': message.user.name === username, 'other_message': message.user.name !== username}">
-            <span class="user_name">{{ message.user.name }}:</span><br>
-            <span>{{ message.message }}</span>
-            <div class="time">{{message.time | date:'dd.MM HH:mm'}}</div>
-          </ion-col>
-    
-          <ion-col offset="3" size="9" *ngIf="message.user.name === username" class="message"
-                  [ngClass]="{'my_message': message.user.name === username, 'other_message': message.user.name !== username}">
-            <span class="user_name">{{ message.user.name }}:</span><br>
-            <span>{{ message.message }}</span>
-            <div class="time">{{message.time | date:'dd.MM HH:mm'}}</div>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <ion-content>
+        <ion-grid>
+          <ion-row *ngFor="let message of messages['General']">
+            <ion-col size="9" *ngIf="message.user.name !== username" class="message"
+                    [ngClass]="{'my_message': message.user.name === username, 'other_message': message.user.name !== username}">
+              <span class="user_name"><strong>{{ message.user.name }}:</strong></span><br>
+              <span>{{ message.message }}</span>
+              <div class="time">{{message.time | date:'dd.MM HH:mm'}}</div>
+            </ion-col>
+      
+            <ion-col offset="3" size="9" *ngIf="message.user.name === username" class="message"
+                    [ngClass]="{'my_message': message.user.name === username, 'other_message': message.user.name !== username}">
+              <span class="user_name"><strong>{{ message.user.name }}:</strong></span><br>
+              <span>{{ message.message }}</span>
+              <div class="time">{{message.time | date:'dd.MM HH:mm'}}</div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-content>
+      
     </mat-list>
     <!-- Input de escritura -->
     <div class="conversation-input">

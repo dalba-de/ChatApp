@@ -18,6 +18,10 @@ export class UsersService {
     return await this.usersRepository.find();
   }
 
+  async findByName(name) {
+    return await this.usersRepository.findOne({where: {name: name}});
+  }
+
   async findOne(id: number) {
     return this.usersRepository.findOne(id);
   }

@@ -119,8 +119,11 @@ section .mat-list .mat-list-avatar{
     background-color: lightgrey !important;
     color: #ffffff !important;
 }
-.other_message .user_name, .other_message .time {
+.other_message .other_message .time {
     color: #f5f6f9;
+}
+.other_message .user_name {
+    color: #1e2023;
 }
 .time {
     float: right;

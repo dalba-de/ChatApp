@@ -26,4 +26,12 @@ export class ApiService {
   public getMessages() {
     return this.httpClient.get(`${this.API_SERVER}/messages`);
   }
+
+  public getUserByName(name: string) {
+    return this.httpClient.get(`${this.API_SERVER}/users/${name}/name`, {
+      params: {
+          name: name
+      }
+  })
+  }
 }
