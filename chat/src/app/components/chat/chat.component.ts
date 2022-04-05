@@ -4,6 +4,7 @@ import { IUser } from "./user";
 import { MatSidenav } from "@angular/material/sidenav";
 import { ApiService } from "../../services/api.service";
 import { IonContent } from "@ionic/angular";
+import { Room } from "./room";
 
 @Component({
   selector: 'app-chat',
@@ -22,12 +23,12 @@ export class ChatComponent implements OnInit {
   id: number = 0;
   messages: any = {};
   text: string = '';
+  rooms: Room[] = [];
 
   constructor(private socket : Socket, private apiService : ApiService) { }
 
   ngOnInit(): void {
 
-    // this.scrollToBottomOnInit();
     // Añadimos username desde la sesion
     this.username = sessionStorage.getItem('username')!;
     
@@ -43,15 +44,6 @@ export class ChatComponent implements OnInit {
           this.users.push(this.allUsers[i].name);
       }
       console.log(this.users);
-    })
-
-    // Comprobación de mensajes
-    this.apiService.getMessages().subscribe((result) => {
-      this.allMessages = result;
-      for (let i = 0; i < this.allMessages.length; i++) {
-        this.messages[this.allMessages[i].room].push(this.allMessages[i])
-      }
-      console.log(this.messages);
     })
 
     // Cuando se conecta el socket
@@ -105,8 +97,18 @@ export class ChatComponent implements OnInit {
     this.socket.on('chatToClient', (msg) => {
       this.receiveChatMessage(msg);
     })
+
+    // Comprobación de mensajes
+    this.apiService.getMessages().subscribe((result) => {
+      this.allMessages = result;
+      for (let i = 0; i < this.allMessages.length; i++) {
+        this.messages[this.allMessages[i].room].push(this.allMessages[i])
+      }
+      console.log(this.messages);
+    })
   }
 
+  // Manda un mensaje al servidor
   sendChatMessage() {
     this.socket.emit('chatToServer', { sender: this.username, room: 'General', message: this.text });
     this.text = "";
@@ -125,9 +127,6 @@ export class ChatComponent implements OnInit {
         this.messages[this.allMessages[i].room].push(this.allMessages[i])
       }
     })
-
-    // console.log(msg)
-    // this.messages[msg.room].push(msg);
   }
 }
 
