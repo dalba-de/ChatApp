@@ -16,9 +16,12 @@ export class ChatComponent implements OnInit {
   @ViewChild(MatSidenav) sidenav!: MatSidenav;
   @ViewChild(IonContent, {static: false}) content!: IonContent;
 
+  selectedRoom: string = '';
+
   users: string[] = [];
   allUsers: any = [];
   allMessages: any = [];
+  allRooms: any = [];
   username: string = "";
   id: number = 0;
   messages: any = {};
@@ -72,11 +75,6 @@ export class ChatComponent implements OnInit {
           this.socket.emit('update-user', {nickname: this.username, id: this.id});
         }
       })
-      // Comprobamos los mensajes que hay ... IMPLEMENTAR
-      let value: string[] = [];
-      Object.assign(this.messages, {General: value});
-      let value1: string[] = [];
-      Object.assign(this.messages, {Tardis: value1});
     })
 
     // Salta cada vez que entra un nuevo usuario al chat
@@ -98,11 +96,22 @@ export class ChatComponent implements OnInit {
       this.receiveChatMessage(msg);
     })
 
+    //Comprobación de grupos y añadimos los objetos a this.messages
+    this.apiService.getGroups().subscribe((result) => {
+        this.allRooms = result;
+        for (let i = 0; i < this.allRooms.length; i++) {
+            this.rooms.push(this.allRooms[i]);
+            let value: string[] = [];
+            Object.assign(this.messages, {[this.allRooms[i].name]: value});
+        }
+        console.log(this.rooms)
+    })
+
     // Comprobación de mensajes
     this.apiService.getMessages().subscribe((result) => {
       this.allMessages = result;
       for (let i = 0; i < this.allMessages.length; i++) {
-        this.messages[this.allMessages[i].room].push(this.allMessages[i])
+        this.messages[this.allMessages[i].room.name].push(this.allMessages[i])
       }
       console.log(this.messages);
     })
@@ -110,23 +119,26 @@ export class ChatComponent implements OnInit {
 
   // Manda un mensaje al servidor
   sendChatMessage() {
-    this.socket.emit('chatToServer', { sender: this.username, room: 'General', message: this.text });
+    this.socket.emit('chatToServer', { sender: this.username, room: this.selectedRoom, message: this.text });
     this.text = "";
   }
 
+  // ARREGLAR AQUI. LA LINEA 130 TIENE QUE BORRAR TODOS LOS OBJETOS, O GESTIONARLO PARA QUE
+  // CUANDO SE LLAME A UPDATESELECTEDROOM, CARGUE LOS MENSAJES DE LA SALA EN CUESTION
   async receiveChatMessage(msg) {
-    // const arr = msg.room;
-    // this.messages[arr].push(msg);
-    //ARREGLARLO! MIRAR DE QUE ROOM VIENE Y BORRAR SOLO ESA EN LINEA 116
     console.log(msg)
     this.messages[msg.room] = []
     await this.apiService.getMessages().subscribe((result) => {
       console.log(result)
       this.allMessages = result;
       for (let i = 0; i < this.allMessages.length; i++) {
-        this.messages[this.allMessages[i].room].push(this.allMessages[i])
+        this.messages[this.allMessages[i].room.name].push(this.allMessages[i])
       }
     })
+  }
+
+  updateSelectedRoom(name: string) {
+    this.selectedRoom = name;
   }
 }
 

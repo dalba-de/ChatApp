@@ -18,6 +18,13 @@ export class MessagesService {
     return await this.messageRepository.find();
   }
 
+  async findByRoom(name) {
+    return await this.messageRepository.find({
+        relations: ['room'],
+        where: { room: {name: name} }
+    });
+}
+
   findOne(id: number) {
     return `This action returns a #${id} message`;
   }

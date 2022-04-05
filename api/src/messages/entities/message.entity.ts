@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn, ManyToMany, JoinTable } from "typeorm";
 import { User } from "../../users/entities/user.entity";
+import { Room } from "../../rooms/entities/room.entity";
 
 @Entity()
 export class Message {
@@ -9,14 +10,17 @@ export class Message {
     @Column()
     message: string
 
-    @Column()
-    room: string
-
     @ManyToOne(() => User, (user) => user.messages, {
         cascade: true,
         eager: true
     })
     user: User;
+
+    @ManyToOne(() => Room, (room) => room.messages, {
+        cascade: true,
+        eager: true
+    })
+    room: Room;
 
     @Column({ type: "timestamptz", default: () => 'CURRENT_TIMESTAMP' })
     time: Date;

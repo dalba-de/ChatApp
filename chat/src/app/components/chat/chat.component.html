@@ -11,9 +11,9 @@
             <mat-icon matListIcon>forum</mat-icon>
           </ng-template>
           <mat-list class="conversations">
-            <mat-list-item>
+            <mat-list-item *ngFor="let room of rooms" (click)="updateSelectedRoom(room.name)">
               <mat-icon matListIcon style="font-size: 15px;">public</mat-icon>
-              <p>General</p>
+              <p>{{room.name}}</p>
             </mat-list-item>
           </mat-list>
         </mat-tab>
@@ -66,16 +66,16 @@
   </mat-sidenav>
 
   <!-- Sección de escritura sin sala seleccionada -->
-  <!-- <section class="empty-conversation">
+  <section class="empty-conversation" *ngIf="!selectedRoom">
     <h1 class="mat-display-1">Select a conversation from the left to start chatting</h1>
-  </section> -->
+  </section>
 
   <!-- Cabecera sección escritura -->
-  <section>
+  <section *ngIf="selectedRoom">
     <div class="mat-typography conversation-header">
       <h2>
         <mat-icon>forum</mat-icon>
-        General
+        {{selectedRoom}}
       </h2>
       <p>
         <mat-icon>account_circle</mat-icon>
@@ -88,7 +88,7 @@
     <mat-list dense class="conversation-history mat-typography">
       <ion-content>
         <ion-grid>
-          <ion-row *ngFor="let message of messages['General']">
+          <ion-row *ngFor="let message of messages[selectedRoom]">
             <ion-col size="9" *ngIf="message.user.name !== username" class="message"
                     [ngClass]="{'my_message': message.user.name === username, 'other_message': message.user.name !== username}">
               <span class="user_name"><strong>{{ message.user.name }}:</strong></span><br>

@@ -6,6 +6,7 @@ import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UsersModule } from './users/users.module';
 import { MessagesModule } from './messages/messages.module';
+import { RoomsModule } from './rooms/rooms.module';
 
 
 @Module({
@@ -22,7 +23,8 @@ import { MessagesModule } from './messages/messages.module';
       synchronize: true
     }),
     UsersModule,
-    MessagesModule
+    MessagesModule,
+    RoomsModule
   ],
   controllers: [AppController],
   providers: [AppService, ChatGateway],

@@ -20,7 +20,7 @@ export class ApiService {
   }
 
   public getGroups() {
-    return this.httpClient.get(`${this.API_SERVER}/groups/`);
+    return this.httpClient.get(`${this.API_SERVER}/rooms/`);
   }
 
   public getMessages() {

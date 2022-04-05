@@ -17,6 +17,11 @@ export class MessagesController {
     return this.messagesService.findAll();
   }
 
+  @Get(':name/room')
+  findByRoom(@Param('name') name) {
+      return this.messagesService.findByRoom(name)
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.messagesService.findOne(+id);

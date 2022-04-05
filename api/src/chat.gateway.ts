@@ -3,9 +3,11 @@ import { Logger } from "@nestjs/common";
 import { Socket, Server } from "socket.io";
 import { UsersService } from "./users/users.service";
 import { MessagesService } from "./messages/messages.service";
+import { RoomsService } from "./rooms/rooms.service";
 import { CreateUserDto } from "./users/dto/create-user.dto";
 import { UpdateUserDto } from "./users/dto/update-user.dto";
 import { CreateMessageDto } from "./messages/dto/create-message.dto";
+import { CreateRoomDto } from "./rooms/dto/create-room.dto";
 import { User } from "./users/entities/user.entity";
 
 @WebSocketGateway({ cors: true })
@@ -14,12 +16,28 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   @WebSocketServer() wss: Server;
 
   constructor (private usersService : UsersService,
-               private messagesService: MessagesService) {}
+               private messagesService: MessagesService,
+               private roomService: RoomsService) {}
 
   private logger: Logger = new Logger('ChatGateway');
 
-  afterInit(server: any) {
+  async afterInit(server: any) {
     this.logger.log("Initialized!")
+    let rooms : any = [];
+    let flag : number = 0;
+    rooms = await this.roomService.findAll();
+
+    for (let i = 0; i < rooms.length; i++) {
+        if (rooms[i].name === 'General')
+            flag = 1;
+    }
+    if (!flag) {
+        let newRoom : CreateRoomDto = {
+            name: 'General'
+        }
+        this.roomService.create(newRoom);
+    }
+    
   }
 
   handleConnection(client: any, ...args: any[]) {
@@ -57,10 +75,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   @SubscribeMessage('chatToServer')
   async handleMessage(client: Socket, message: {sender: string, room: string, message: string}) {
     let user : any = await this.usersService.findByName(message.sender);
+    let room : any = await this.roomService.findByName(message.room);
 
     let newMsg: any = {
       user: user.id,
-      room: 'General',
+      room: room.id,
       message: message.message
     }
     await this.messagesService.create(newMsg);
