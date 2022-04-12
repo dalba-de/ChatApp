@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn, ManyToMany, JoinTable } from "typeorm";
 import { Message } from "../../messages/entities/message.entity";
+import { User } from "../../users/entities/user.entity";
 
 @Entity()
 export class Room {
@@ -11,4 +12,11 @@ export class Room {
 
     @OneToMany(() => Message, (message) => message.room)
     messages: Message[];
+
+    @ManyToMany(() => User, (user: User) => user.rooms, {
+        cascade: true,
+        eager: true
+    })
+    @JoinTable()
+    users : User[]
 }

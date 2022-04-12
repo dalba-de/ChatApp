@@ -22,12 +22,25 @@ export class RoomsService {
       return await this.roomsRepository.findOne({where: {name: name}});
   }
 
+  async findUsersInRoom(name) {
+    const findName = name;
+
+    return await this.roomsRepository.createQueryBuilder('rooms')
+      .innerJoin('rooms.users', 'rooms_users')
+      .where("rooms_users.name = :findName", {findName} )
+      .getMany();
+  }
+
   async findOne(id: number) {
     return await this.roomsRepository.findOne(id);
   }
 
   update(id: number, updateRoomDto: UpdateRoomDto) {
     return `This action updates a #${id} room`;
+  }
+
+  async updateRoom(updateRoomDto: UpdateRoomDto) {
+    return await this.roomsRepository.save(updateRoomDto);
   }
 
   remove(id: number) {

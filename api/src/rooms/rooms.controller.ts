@@ -22,9 +22,19 @@ export class RoomsController {
     return this.roomsService.findByName(name);
   }
 
+  @Get(':name/users')
+  findUsersInRoom(@Param('name') name) {
+    return this.roomsService.findUsersInRoom(name);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.roomsService.findOne(+id);
+  }
+
+  @Patch('/update')
+  updateUsers(@Body() updateRoomDto: UpdateRoomDto) {
+    return this.roomsService.updateRoom(updateRoomDto);
   }
 
   @Patch(':id')

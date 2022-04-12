@@ -123,12 +123,11 @@ export class ChatComponent implements OnInit {
     this.text = "";
   }
 
-  // ARREGLAR AQUI. LA LINEA 130 TIENE QUE BORRAR TODOS LOS OBJETOS, O GESTIONARLO PARA QUE
-  // CUANDO SE LLAME A UPDATESELECTEDROOM, CARGUE LOS MENSAJES DE LA SALA EN CUESTION
+  // Lee el mensaje del servidor y actualiza los mensajes de la sala
   async receiveChatMessage(msg) {
     console.log(msg)
     this.messages[msg.room] = []
-    await this.apiService.getMessages().subscribe((result) => {
+    await this.apiService.getMessagesByRoom(msg.room).subscribe((result) => {
       console.log(result)
       this.allMessages = result;
       for (let i = 0; i < this.allMessages.length; i++) {
@@ -141,4 +140,6 @@ export class ChatComponent implements OnInit {
     this.selectedRoom = name;
   }
 }
+
+// PROXIMO A HACER: ELEGIR LAS SALAS EN LAS QUE ESTA EL USUARIO Y MOSTRARLAS EN EL NAVEGADOR LATERAL
 
