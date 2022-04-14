@@ -20,16 +20,12 @@ export class ChatComponent implements OnInit {
 
   users: string[] = [];
   allUsers: any = [];
-  allMessages: any = [];
-  allRooms: any = [];
   username: string = "";
   id: number = 0;
-  messages: any = {};
+  messages: any = [];
   text: string = '';
-  rooms: Room[] = [];
-
-  testRooms: any = [];
-  testMessages: any = [];
+  rooms: any = [];
+  
 
   constructor(private socket : Socket, private apiService : ApiService) { }
 
@@ -49,16 +45,15 @@ export class ChatComponent implements OnInit {
         if (this.allUsers[i].name !== this.username)
           this.users.push(this.allUsers[i].name);
       }
-      console.log(this.users);
     })
 
     // Comprobación de las salas a las que pertenecemos
     // cuando volvemos de otra pagina de la SPA
-    this.rooms = [];
-    this.apiService.getRoomsbyUser(this.username).subscribe((result) =>{
-      this.testRooms = result
-      console.log(this.testRooms);
-    })
+    // this.apiService.getRoomsbyUser(this.username).subscribe((result) =>{
+    //   this.rooms = result
+    // })
+
+    // CUIDADO AQUI, ESTO ESTA REPETIDO
 
     // Cuando se conecta el socket
     this.socket.on('connect', () => {
@@ -80,14 +75,20 @@ export class ChatComponent implements OnInit {
         if (!flag) {
           // Si es la primera vez, creamos el usuario
           this.socket.emit('set-user', {nickname: this.username});
-          // Le unimos a la sala general
-          this.socket.emit('join-room', {room: 'General', nickname: this.username})
         }
         else {
           // Si no es la primera vez actualizamos el socket
           this.socket.emit('update-user', {nickname: this.username, id: this.id});
+          //Tenemos que volver a unirnos a todas las salas en las que estuviesemos
+          this.socket.emit('rejoin-room', {nickname: this.username});
         }
       })
+    })
+
+    // Funcion externa para unirle a la sala general una vez que se crea el usuario.
+    this.socket.on('new-user', (data) => {
+      if (data.name == this.username)
+        this.socket.emit('join-room', {room: 'General', nickname: this.username})
     })
 
     // Salta cada vez que entra un nuevo usuario al chat
@@ -100,7 +101,6 @@ export class ChatComponent implements OnInit {
           if (this.allUsers[i].name !== this.username)
             this.users.push(this.allUsers[i].name);
         }
-        console.log(this.users);
       })
     })
 
@@ -108,8 +108,7 @@ export class ChatComponent implements OnInit {
     // actualizando la lista de salas.
     this.socket.on('joined-room', () => {
       this.apiService.getRoomsbyUser(this.username).subscribe((result) =>{
-        this.testRooms = result
-        console.log(this.testRooms);
+        this.rooms = result
       })
     })
 
@@ -118,30 +117,9 @@ export class ChatComponent implements OnInit {
       this.receiveChatMessage(msg);
     })
 
-    //Comprobación de grupos y añadimos los objetos a this.messages
-    this.apiService.getGroups().subscribe((result) => {
-        this.allRooms = result;
-        for (let i = 0; i < this.allRooms.length; i++) {
-            this.rooms.push(this.allRooms[i]);
-            let value: string[] = [];
-            Object.assign(this.messages, {[this.allRooms[i].name]: value});
-        }
-        console.log(this.rooms)
-    })
-
     // Comprobación de las salas a las que pertenecemos
     this.apiService.getRoomsbyUser(this.username).subscribe((result) =>{
-      this.testRooms = result
-      console.log(this.testRooms);
-    })
-
-    // Comprobación de mensajes
-    this.apiService.getMessages().subscribe((result) => {
-      this.allMessages = result;
-      for (let i = 0; i < this.allMessages.length; i++) {
-        this.messages[this.allMessages[i].room.name].push(this.allMessages[i])
-      }
-      console.log(this.messages);
+      this.rooms = result
     })
   }
 
@@ -153,19 +131,18 @@ export class ChatComponent implements OnInit {
 
   // Lee el mensaje del servidor y actualiza los mensajes de la sala
   async receiveChatMessage(msg) {
-    console.log(msg)
-    this.messages[msg.room] = []
     await this.apiService.getMessagesByRoom(msg.room).subscribe((result) => {
-      console.log(result)
-      this.allMessages = result;
-      for (let i = 0; i < this.allMessages.length; i++) {
-        this.messages[this.allMessages[i].room.name].push(this.allMessages[i])
-      }
+        this.messages = [];
+        this.messages = result;
     })
   }
 
   updateSelectedRoom(name: string) {
     this.selectedRoom = name;
+    this.apiService.getMessagesByRoom(this.selectedRoom).subscribe((result) => {
+        this.messages = [];
+        this.messages = result;
+    })
   }
 }
 

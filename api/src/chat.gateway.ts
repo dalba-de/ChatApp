@@ -60,10 +60,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
     await this.usersService.create(newUser);
     this.wss.emit('users');
+    this.wss.emit('new-user', {name: data.nickname});
     this.logger.log("User created!");
   }
 
-  createJson(data: any[]): any[] {
+  async createJson(data: any[]): Promise<any[]> {
     let users: any[] = [];
 
     for (let i in data) {
@@ -79,14 +80,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   @SubscribeMessage('join-room')
   async joinRoom(client: Socket, data : {room: string, nickname: string}) {
     let room: any = await this.roomService.findByName(data.room);
-    let users: any[] = this.createJson(room.users);
+    let users: any[] = await this.createJson(room.users);
     let user: any = await this.usersService.findByName(data.nickname);
 
     users.push({
         "id": user.id
     })
-    console.log("Debug!");
-    console.log(users);
 
     let updateRoom: UpdateRoomDto;
     updateRoom = {
@@ -98,6 +97,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.wss.emit('joined-room');
   }
 
+  @SubscribeMessage('rejoin-room')
+  async rejoinRoom(client: Socket, data : {nickname: string}) {
+      let rooms: any = await this.roomService.findUsersInRoom(data.nickname);
+      for (let i = 0; i < rooms.length; i++) {
+          client.join(rooms[i].name);
+      }
+      this.wss.emit('joined-room');
+  }
+
   @SubscribeMessage('update-user')
   updateUser(client: Socket, data : {nickname : string, id : number}) {
     let updateUser : UpdateUserDto;
@@ -106,7 +114,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       socket : client.id
     }
     this.usersService.updateUser(updateUser);
-    client.join('General');
   }
 
   @SubscribeMessage('chatToServer')

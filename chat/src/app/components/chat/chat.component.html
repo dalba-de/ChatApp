@@ -11,7 +11,7 @@
             <mat-icon matListIcon>forum</mat-icon>
           </ng-template>
           <mat-list class="conversations">
-            <mat-list-item *ngFor="let room of testRooms" (click)="updateSelectedRoom(room.name)">
+            <mat-list-item *ngFor="let room of rooms" (click)="updateSelectedRoom(room.name)">
               <mat-icon matListIcon style="font-size: 15px;">public</mat-icon>
               <p>{{room.name}}</p>
             </mat-list-item>
@@ -88,7 +88,8 @@
     <mat-list dense class="conversation-history mat-typography">
       <ion-content>
         <ion-grid>
-          <ion-row *ngFor="let message of messages[selectedRoom]">
+          <!-- <ion-row *ngFor="let message of messages[selectedRoom]"> -->
+          <ion-row *ngFor="let message of messages">    
             <ion-col size="9" *ngIf="message.user.name !== username" class="message"
                     [ngClass]="{'my_message': message.user.name === username, 'other_message': message.user.name !== username}">
               <span class="user_name"><strong>{{ message.user.name }}:</strong></span><br>
