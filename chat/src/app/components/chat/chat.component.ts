@@ -28,6 +28,9 @@ export class ChatComponent implements OnInit {
   text: string = '';
   rooms: Room[] = [];
 
+  testRooms: any = [];
+  testMessages: any = [];
+
   constructor(private socket : Socket, private apiService : ApiService) { }
 
   ngOnInit(): void {
@@ -47,6 +50,14 @@ export class ChatComponent implements OnInit {
           this.users.push(this.allUsers[i].name);
       }
       console.log(this.users);
+    })
+
+    // Comprobación de las salas a las que pertenecemos
+    // cuando volvemos de otra pagina de la SPA
+    this.rooms = [];
+    this.apiService.getRoomsbyUser(this.username).subscribe((result) =>{
+      this.testRooms = result
+      console.log(this.testRooms);
     })
 
     // Cuando se conecta el socket
@@ -69,6 +80,8 @@ export class ChatComponent implements OnInit {
         if (!flag) {
           // Si es la primera vez, creamos el usuario
           this.socket.emit('set-user', {nickname: this.username});
+          // Le unimos a la sala general
+          this.socket.emit('join-room', {room: 'General', nickname: this.username})
         }
         else {
           // Si no es la primera vez actualizamos el socket
@@ -91,6 +104,15 @@ export class ChatComponent implements OnInit {
       })
     })
 
+    // Salta cada vez que nos unimos a una nueva sala,
+    // actualizando la lista de salas.
+    this.socket.on('joined-room', () => {
+      this.apiService.getRoomsbyUser(this.username).subscribe((result) =>{
+        this.testRooms = result
+        console.log(this.testRooms);
+      })
+    })
+
     // Salta cuando se recibe un nuevo mensaje del servidor
     this.socket.on('chatToClient', (msg) => {
       this.receiveChatMessage(msg);
@@ -105,6 +127,12 @@ export class ChatComponent implements OnInit {
             Object.assign(this.messages, {[this.allRooms[i].name]: value});
         }
         console.log(this.rooms)
+    })
+
+    // Comprobación de las salas a las que pertenecemos
+    this.apiService.getRoomsbyUser(this.username).subscribe((result) =>{
+      this.testRooms = result
+      console.log(this.testRooms);
     })
 
     // Comprobación de mensajes

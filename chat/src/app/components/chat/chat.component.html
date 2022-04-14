@@ -11,7 +11,7 @@
             <mat-icon matListIcon>forum</mat-icon>
           </ng-template>
           <mat-list class="conversations">
-            <mat-list-item *ngFor="let room of rooms" (click)="updateSelectedRoom(room.name)">
+            <mat-list-item *ngFor="let room of testRooms" (click)="updateSelectedRoom(room.name)">
               <mat-icon matListIcon style="font-size: 15px;">public</mat-icon>
               <p>{{room.name}}</p>
             </mat-list-item>

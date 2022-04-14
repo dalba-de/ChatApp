@@ -8,7 +8,9 @@ import { CreateUserDto } from "./users/dto/create-user.dto";
 import { UpdateUserDto } from "./users/dto/update-user.dto";
 import { CreateMessageDto } from "./messages/dto/create-message.dto";
 import { CreateRoomDto } from "./rooms/dto/create-room.dto";
+import { UpdateRoomDto } from "./rooms/dto/update-room.dto";
 import { User } from "./users/entities/user.entity";
+import { IoAdapter } from '@nestjs/platform-socket.io';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
@@ -59,7 +61,27 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
     this.usersService.create(newUser);
     this.wss.emit('users');
-    this.logger.log("User created!")
+    this.logger.log("User created!");
+  }
+
+  @SubscribeMessage('join-room')
+  async joinRoom(client: Socket, data : {room: string, nickname: string}) {
+    let room: any = await this.roomService.findByName(data.room);
+    let user: any = await this.usersService.findByName(data.nickname);
+    //ERROR EN LINEA 78, COMPROBAR CON UN CONSOLE SI EXISTE EL USUARIO
+
+    let updateRoom: UpdateRoomDto;
+    updateRoom = {
+      id: room.id,
+      users: [
+        {
+          id: user.id
+        }
+      ]
+    }
+    this.roomService.updateRoom(updateRoom);
+    client.join(data.room);
+    this.wss.emit('joined-room');
   }
 
   @SubscribeMessage('update-user')
@@ -70,6 +92,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       socket : client.id
     }
     this.usersService.updateUser(updateUser);
+    client.join('General');
   }
 
   @SubscribeMessage('chatToServer')
@@ -84,6 +107,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     }
     await this.messagesService.create(newMsg);
 
-    this.wss.emit('chatToClient', {text: message.message, room: message.room, from: message.sender, created: new Date()});
+    //this.wss.emit('chatToClient', {text: message.message, room: message.room, from: message.sender, created: new Date()});
+    this.wss.to(message.room).emit('chatToClient', {text: message.message, room: message.room, from: message.sender, created: new Date()})
   }
 }
