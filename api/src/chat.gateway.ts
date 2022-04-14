@@ -10,7 +10,6 @@ import { CreateMessageDto } from "./messages/dto/create-message.dto";
 import { CreateRoomDto } from "./rooms/dto/create-room.dto";
 import { UpdateRoomDto } from "./rooms/dto/update-room.dto";
 import { User } from "./users/entities/user.entity";
-import { IoAdapter } from '@nestjs/platform-socket.io';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
@@ -51,7 +50,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   }
 
   @SubscribeMessage('set-user')
-  setUser(client: Socket, data : {nickname: string}) {
+  async setUser(client: Socket, data : {nickname: string}) {
 
     let newUser : CreateUserDto;
     newUser = {
@@ -59,27 +58,42 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       name : data.nickname
     }
 
-    this.usersService.create(newUser);
+    await this.usersService.create(newUser);
     this.wss.emit('users');
     this.logger.log("User created!");
+  }
+
+  createJson(data: any[]): any[] {
+    let users: any[] = [];
+
+    for (let i in data) {
+        let item = data[i];
+
+        users.push({
+            "id": item.id
+        })
+    }
+    return users;
   }
 
   @SubscribeMessage('join-room')
   async joinRoom(client: Socket, data : {room: string, nickname: string}) {
     let room: any = await this.roomService.findByName(data.room);
+    let users: any[] = this.createJson(room.users);
     let user: any = await this.usersService.findByName(data.nickname);
-    //ERROR EN LINEA 78, COMPROBAR CON UN CONSOLE SI EXISTE EL USUARIO
+
+    users.push({
+        "id": user.id
+    })
+    console.log("Debug!");
+    console.log(users);
 
     let updateRoom: UpdateRoomDto;
     updateRoom = {
       id: room.id,
-      users: [
-        {
-          id: user.id
-        }
-      ]
+      users: users
     }
-    this.roomService.updateRoom(updateRoom);
+    await this.roomService.updateRoom(updateRoom);
     client.join(data.room);
     this.wss.emit('joined-room');
   }
