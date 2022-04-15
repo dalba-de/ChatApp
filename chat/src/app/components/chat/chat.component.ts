@@ -17,6 +17,8 @@ export class ChatComponent implements OnInit {
   @ViewChild(IonContent, {static: false}) content!: IonContent;
 
   selectedRoom: string = '';
+	showRoom: string = '';
+	notificationRoom: string[] = [];
 
   users: string[] = [];
   allUsers: any = [];
@@ -71,7 +73,7 @@ export class ChatComponent implements OnInit {
         }
         else {
           // Si no es la primera vez actualizamos el socket
-          //this.socket.emit('update-user', {nickname: this.username, id: this.id});
+          this.socket.emit('update-user', {nickname: this.username, id: this.id});
           //Tenemos que volver a unirnos a todas las salas en las que estuviesemos
           this.socket.emit('rejoin-room', {nickname: this.username});
         }
@@ -107,7 +109,7 @@ export class ChatComponent implements OnInit {
 
     // Salta cuando se recibe un nuevo mensaje del servidor
     this.socket.on('chatToClient', (msg) => {
-      this.receiveChatMessage(msg);
+      	this.receiveChatMessage(msg);
     })
 
     // Comprobación de las salas a las que pertenecemos
@@ -116,39 +118,98 @@ export class ChatComponent implements OnInit {
     })
   }
 
-  // Manda un mensaje al servidor
+	/**
+	 * Manda un mensaje al servidor
+	 */
   sendChatMessage() {
     this.socket.emit('chatToServer', { sender: this.username, room: this.selectedRoom, message: this.text });
     this.text = "";
   }
 
-  // Lee el mensaje del servidor y actualiza los mensajes de la sala
+	/**
+	 * Lee el mensaje del servidor y actualiza los mensajes de la sala
+	 */
   async receiveChatMessage(msg) {
-    await this.apiService.getMessagesByRoom(msg.room).subscribe((result) => {
+		if (msg.room === this.selectedRoom) {
+			await this.apiService.getMessagesByRoom(msg.room).subscribe((result) => {
         this.messages = [];
         this.messages = result;
-    })
+    	})
+		}
+		else if (msg.sender !== this.username) {
+			this.notificationRoom.push(msg.room);
+			this.playAudio();
+		}
+    
   }
 
+	/**
+	 * Actualiza la sala en la que nos encontramos actualmente, asi como el valor
+	 * que se muestra en la cabecera
+	 */
   updateSelectedRoom(name: string) {
-    this.selectedRoom = name;
-    this.apiService.getMessagesByRoom(this.selectedRoom).subscribe((result) => {
+
+		//Obtiene los mensajes de la sala seleccionada
+		this.selectedRoom = name;
+    this.apiService.getMessagesByRoom(name).subscribe((result) => {
         this.messages = [];
         this.messages = result;
     })
 
+		// Calcula el numero de usuarios presentes y el nombre en la sala seleccionada
     let room: any;
     this.apiService.getRoomByName(name).subscribe((result) => {
         room = result;
         this.usersInRoom = room.users.length;
+				if (room.isGroup)
+					this.showRoom = name;
+				else
+					this.showRoom = this.splitName(name);
     })
+
+		// Si existe notificacion en la sala, la elimina
+		const index = this.notificationRoom.indexOf(name);
+		if (index > -1) {
+			this.notificationRoom.splice(index, 1);
+		}
   }
 
+	/**
+	 * Emite un aviso al gateway cuando se intenta un chat privado
+	 */
   userToUser(user: string) {
       if (confirm("Do you want to start a chat with " + user + "?")) {
           this.socket.emit('user-to-user', {myUser: this.username, otherUser: user});
       }
   }
+
+	/**
+	 * Función utilizada para mostrar correctamente el nombre de los chats privados
+name: string	: string */
+	public splitName(name: string): string {
+		let roomname: string = name.replace(this.username, '');
+		return(roomname);
+	}
+
+	/**
+	 * Reproduce un fichero de audio
+	 */
+	public playAudio() {
+    let audio = new Audio();
+    audio.src = "../../assets/audio/notification.mp3";
+    audio.load();
+    audio.play();
+  }
+
+	/**
+	 * Compruebas las notificaciones de cada sala
+	 */
+	public isInArray(name: string): boolean {
+		let val: number = this.notificationRoom.indexOf(name);
+		if (val !== -1)
+			return true;
+		return false;
+	}
 }
 
 // PROXIMO A HACER: ELEGIR LAS SALAS EN LAS QUE ESTA EL USUARIO Y MOSTRARLAS EN EL NAVEGADOR LATERAL

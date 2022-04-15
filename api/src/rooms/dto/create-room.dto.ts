@@ -3,4 +3,5 @@ export class CreateRoomDto {
     private: boolean
     isGroup: boolean
     password: string
+    users: any[]
 }

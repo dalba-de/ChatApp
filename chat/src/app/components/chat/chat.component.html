@@ -15,7 +15,11 @@
               <mat-icon matListIcon style="font-size: 15px;" *ngIf="room.isGroup && !room.private">public</mat-icon>
               <mat-icon matListIcon style="font-size: 15px;" *ngIf="!room.isGroup">whatsapp</mat-icon>
               <mat-icon matListIcon style="font-size: 15px;" *ngIf="room.isGroup && room.private">lock</mat-icon>
-              <p>{{room.name}}</p>
+              <mat-icon class="icon_display" *ngIf="isInArray(room.name)">notifications</mat-icon>
+              <p *ngIf="room.name == selectedRoom && room.isGroup"><strong>{{room.name}}</strong></p>
+              <p *ngIf="room.name == selectedRoom && !room.isGroup"><strong>{{splitName(room.name)}}</strong></p>
+              <p *ngIf="room.name != selectedRoom && room.isGroup">{{room.name}}</p>
+              <p *ngIf="room.name != selectedRoom && !room.isGroup">{{splitName(room.name)}}</p>
             </mat-list-item>
           </mat-list>
         </mat-tab>
@@ -77,7 +81,7 @@
     <div class="mat-typography conversation-header">
       <h2>
         <mat-icon>forum</mat-icon>
-        {{selectedRoom}}
+        {{showRoom}}
       </h2>
       <p>
         <mat-icon>account_circle</mat-icon>
