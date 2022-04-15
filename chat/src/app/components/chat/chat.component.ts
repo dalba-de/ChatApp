@@ -23,11 +23,14 @@ export class ChatComponent implements OnInit {
   users: string[] = [];
   allUsers: any = [];
   usersInRoom: number = 0;
+	usersInRoomArr: any = [];
   username: string = "";
   id: number = 0;
   messages: any = [];
   text: string = '';
   rooms: any = [];
+
+	newRoom: string = '';
   
 
   constructor(private socket : Socket, private apiService : ApiService) { }
@@ -161,6 +164,7 @@ export class ChatComponent implements OnInit {
     this.apiService.getRoomByName(name).subscribe((result) => {
         room = result;
         this.usersInRoom = room.users.length;
+				this.usersInRoomArr = room.users;
 				if (room.isGroup)
 					this.showRoom = name;
 				else
@@ -182,6 +186,13 @@ export class ChatComponent implements OnInit {
           this.socket.emit('user-to-user', {myUser: this.username, otherUser: user});
       }
   }
+
+	/**
+	 * Crea una nueva sala
+	 */
+	public createNewRoom() {
+		console.log(this.newRoom)
+	}
 
 	/**
 	 * Función utilizada para mostrar correctamente el nombre de los chats privados
@@ -212,5 +223,5 @@ name: string	: string */
 	}
 }
 
-// PROXIMO A HACER: ELEGIR LAS SALAS EN LAS QUE ESTA EL USUARIO Y MOSTRARLAS EN EL NAVEGADOR LATERAL
+// PROXIMO A HACER: CREAR NUEVAS SALAS. GESTIONAR SALAS PRIVADAS
 
