@@ -12,7 +12,9 @@
           </ng-template>
           <mat-list class="conversations">
             <mat-list-item *ngFor="let room of rooms" (click)="updateSelectedRoom(room.name)">
-              <mat-icon matListIcon style="font-size: 15px;">public</mat-icon>
+              <mat-icon matListIcon style="font-size: 15px;" *ngIf="room.isGroup && !room.private">public</mat-icon>
+              <mat-icon matListIcon style="font-size: 15px;" *ngIf="!room.isGroup">whatsapp</mat-icon>
+              <mat-icon matListIcon style="font-size: 15px;" *ngIf="room.isGroup && room.private">lock</mat-icon>
               <p>{{room.name}}</p>
             </mat-list-item>
           </mat-list>
@@ -23,7 +25,7 @@
             <mat-icon matListIcon>people</mat-icon>
           </ng-template>
           <mat-list class="conversations">
-            <mat-list-item *ngFor="let user of users">
+            <mat-list-item *ngFor="let user of users" (click)="userToUser(user)">
               <mat-icon matListIcon style="font-size: 15px;">person</mat-icon>
               <p>{{user}}</p>
             </mat-list-item>
@@ -79,7 +81,7 @@
       </h2>
       <p>
         <mat-icon>account_circle</mat-icon>
-        {{(allUsers).length}} Members
+        {{usersInRoom}} Members
     </p>
     </div>
 

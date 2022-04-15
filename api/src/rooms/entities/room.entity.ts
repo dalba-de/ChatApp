@@ -10,6 +10,15 @@ export class Room {
     @Column({unique: true})
     name: string;
 
+    @Column()
+    private: boolean;
+
+    @Column()
+    isGroup: boolean;
+
+    @Column({nullable: true})
+    password: string;
+
     @OneToMany(() => Message, (message) => message.room)
     messages: Message[];
 

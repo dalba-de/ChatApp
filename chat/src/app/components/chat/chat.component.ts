@@ -20,6 +20,7 @@ export class ChatComponent implements OnInit {
 
   users: string[] = [];
   allUsers: any = [];
+  usersInRoom: number = 0;
   username: string = "";
   id: number = 0;
   messages: any = [];
@@ -47,14 +48,6 @@ export class ChatComponent implements OnInit {
       }
     })
 
-    // Comprobación de las salas a las que pertenecemos
-    // cuando volvemos de otra pagina de la SPA
-    // this.apiService.getRoomsbyUser(this.username).subscribe((result) =>{
-    //   this.rooms = result
-    // })
-
-    // CUIDADO AQUI, ESTO ESTA REPETIDO
-
     // Cuando se conecta el socket
     this.socket.on('connect', () => {
       let flag : number = 0;
@@ -78,7 +71,7 @@ export class ChatComponent implements OnInit {
         }
         else {
           // Si no es la primera vez actualizamos el socket
-          this.socket.emit('update-user', {nickname: this.username, id: this.id});
+          //this.socket.emit('update-user', {nickname: this.username, id: this.id});
           //Tenemos que volver a unirnos a todas las salas en las que estuviesemos
           this.socket.emit('rejoin-room', {nickname: this.username});
         }
@@ -143,6 +136,18 @@ export class ChatComponent implements OnInit {
         this.messages = [];
         this.messages = result;
     })
+
+    let room: any;
+    this.apiService.getRoomByName(name).subscribe((result) => {
+        room = result;
+        this.usersInRoom = room.users.length;
+    })
+  }
+
+  userToUser(user: string) {
+      if (confirm("Do you want to start a chat with " + user + "?")) {
+          this.socket.emit('user-to-user', {myUser: this.username, otherUser: user});
+      }
   }
 }
 

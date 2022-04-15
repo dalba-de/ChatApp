@@ -82,4 +82,15 @@ export class ApiService {
       }
     })
   }
+
+  /**
+   * Devuelve una sala pasando como parámetro el nombre de la sala
+name: string   */
+  public getRoomByName(name: string) {
+      return this.httpClient.get(`${this.API_SERVER}/rooms/${name}/name`, {
+          params: {
+              name: name
+          }
+      })
+  }
 }

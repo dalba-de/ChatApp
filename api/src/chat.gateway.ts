@@ -24,21 +24,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
   async afterInit(server: any) {
     this.logger.log("Initialized!")
-    let rooms : any = [];
-    let flag : number = 0;
-    rooms = await this.roomService.findAll();
 
-    for (let i = 0; i < rooms.length; i++) {
-        if (rooms[i].name === 'General')
-            flag = 1;
-    }
-    if (!flag) {
+    let room : any = await this.roomService.findByName('General');
+    if (!room) {
         let newRoom : CreateRoomDto = {
-            name: 'General'
+            name: 'General',
+            private: false,
+            isGroup: true,
+            password: null
         }
         this.roomService.create(newRoom);
-    }
-    
+    }    
   }
 
   handleConnection(client: any, ...args: any[]) {
@@ -130,5 +126,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
     //this.wss.emit('chatToClient', {text: message.message, room: message.room, from: message.sender, created: new Date()});
     this.wss.to(message.room).emit('chatToClient', {text: message.message, room: message.room, from: message.sender, created: new Date()})
+  }
+
+  @SubscribeMessage('user-to-user')
+  async handleUserToUser(client: Socket, data: {myUser: string, otherUser: string}) {
+    let user : any = await this.usersService.findByName(data.otherUser);
+    let socketId: Socket = this.wss.sockets.sockets.get(user.socket);
   }
 }
