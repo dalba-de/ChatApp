@@ -1,0 +1,8 @@
+<h2 mat-dialog-title>{{description}}</h2>
+
+<mat-list>
+    <mat-list-item *ngFor="let item of Rooms">
+        <mat-icon matListIcon style="font-size: 15px;">check_circle_outline</mat-icon>
+        <p>{{item}}</p>
+    </mat-list-item>
+</mat-list>

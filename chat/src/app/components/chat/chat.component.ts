@@ -1,10 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Socket } from "ngx-socket-io";
 import { IUser } from "./user";
 import { MatSidenav } from "@angular/material/sidenav";
 import { ApiService } from "../../services/api.service";
 import { IonContent } from "@ionic/angular";
 import { Room } from "./room";
+import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
+import { CourseDialogComponent } from '../course-dialog/course-dialog.component';
 
 @Component({
   selector: 'app-chat',
@@ -31,9 +33,11 @@ export class ChatComponent implements OnInit {
   rooms: any = [];
 
 	newRoom: string = '';
+	seekRoom: string = '';
   
 
-  constructor(private socket : Socket, private apiService : ApiService) { }
+  constructor(private socket : Socket, private apiService : ApiService,
+              private dialog: MatDialog) { }
 
   ngOnInit(): void {
 
@@ -143,7 +147,6 @@ export class ChatComponent implements OnInit {
 			this.notificationRoom.push(msg.room);
 			this.playAudio();
 		}
-    
   }
 
 	/**
@@ -181,11 +184,11 @@ export class ChatComponent implements OnInit {
 	/**
 	 * Emite un aviso al gateway cuando se intenta un chat privado
 	 */
-  userToUser(user: string) {
-      if (confirm("Do you want to start a chat with " + user + "?")) {
-          this.socket.emit('user-to-user', {myUser: this.username, otherUser: user});
-      }
-  }
+    userToUser(user: string) {
+        if (confirm("Do you want to start a chat with " + user + "?")) {
+            this.socket.emit('user-to-user', {myUser: this.username, otherUser: user});
+        }
+    }
 
 	/**
 	 * Crea una nueva sala
@@ -221,6 +224,23 @@ name: string	: string */
 			return true;
 		return false;
 	}
+
+    /**
+     * Crear Dialog
+     */
+    public openDialog() {
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.disableClose = false;
+        dialogConfig.autoFocus = true;
+
+        dialogConfig.data = {
+            title: 'List of Rooms',
+						seekRoom: this.seekRoom,
+        }
+
+        this.dialog.open(CourseDialogComponent, dialogConfig);
+    }
 }
 
 // PROXIMO A HACER: CREAR NUEVAS SALAS. GESTIONAR SALAS PRIVADAS

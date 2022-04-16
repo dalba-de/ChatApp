@@ -28,6 +28,18 @@
     align-items: center;
     display: flex;
 }
+
+#wrapper {
+    display: flex;
+}
+
+#left {
+    flex: 0 0 30%;
+}
+
+#right {
+    flex: 1;
+}
  
 .text-center {
     text-align: center;
@@ -39,6 +51,10 @@
     overflow-x: scroll;
     position: absolute;
     width: 100%;
+}
+
+.conversation-history.mat-list::-webkit-scrollbar {
+    display: none;
 }
  
 .conversation-history.mat-list p {
@@ -137,4 +153,62 @@ section .mat-list .mat-list-avatar{
     text-align: center;
     font-weight: bold;
     margin-top: 1em;
+}
+
+.text_input {
+    height: 44px;
+    width: 60%;
+    padding: 0;
+    line-height: 30px;
+    font-size: 20px;
+    padding: 0;
+    margin: 3px;
+    margin-left: 20px;
+    border: none;
+}
+.text_input:focus {
+    outline: none;
+}
+
+.btn {
+    position: absolute; 
+    height: 50px;
+    line-height: 50px;
+    right: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    background: orange;
+    color: white;
+    border: none;
+    width: 30%;
+    font-weight: bold;
+}
+
+.btn:hover {
+    color: black;
+    cursor: pointer;
+}
+
+.bckimg {
+    background-image: url("https://theabbie.github.io/blog/assets/official-whatsapp-background-image.jpg") !important;
+}
+
+::ng-deep .mat-tab-list .mat-tab-labels {
+    background-color: lightgreen;
+}
+
+::ng-deep .mat-drawer .mat-card {
+    background: lightgreen;
+}
+
+::ng-deep .mat-card::-webkit-scrollbar {
+    display: none;
+}
+
+.parent{
+    opacity: 0.7;
+}
+.child{
+    opacity: 1;
 }

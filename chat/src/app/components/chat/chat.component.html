@@ -1,8 +1,8 @@
 <!-- Contenedor completo -->
 <mat-sidenav-container class="container">
   <!-- Sidenav izquierdo, con pestañas para salas y usuarios -->
-  <mat-sidenav mode="side" opened>
-    <mat-card>
+  <mat-sidenav mat-drawer mode="side" opened>
+    <mat-card mat-card>
       <!-- Grupo de 2 pestañas, salas y personas -->
       <mat-tab-group>
         <!-- Pestaña de salas -->
@@ -42,19 +42,48 @@
   <!-- Barra lateral derecha correspondiente a personas en cada sala -->
   <mat-sidenav position="end" mode="side" opened>
     <mat-card>
-      <p class="title">Create a new group</p>
       <mat-tab-group>
+					<mat-tab>
+						<ng-template mat-tab-label>
+							<h2>
+								<mat-icon>search</mat-icon>
+								Search Rooms
+							</h2>
+						</ng-template>
+						<div id="wrapper">
+							<div id="left">
+								<input style="padding: 3px; margin: 12px 0;" matInput mat-input type="text" placeholder="Search a Room" (keydown.space)="$event.preventDefault()" size="10" [(ngModel)]="seekRoom" (keyup.enter)="openDialog()" autocomplete="off">
+							</div>
+							<div id="right">
+								<button style="margin: 8px 0;" mat-icon-button matTooltip="Search room" (click)="openDialog()" [disabled]="seekRoom === ''">
+									<mat-icon>search</mat-icon>
+							</button>
+							</div>
+						</div>
+					</mat-tab>
           <mat-tab>
               <ng-template mat-tab-label>
-                  <input matInput mat-input type="text" placeholder="Group name" (keydown.space)="$event.preventDefault()" size="10" [(ngModel)]="newRoom" (keyup.enter)="createNewRoom()">
-                  <button mat-icon-button matTooltip="Create a new group" (click)="createNewRoom()" [disabled]="newRoom === ''">
-                      <mat-icon>person_add</mat-icon>
-                  </button>
+								<h2>
+									<mat-icon>fiber_new</mat-icon>
+									Create group
+								</h2>
+							</ng-template>
+							<div id="wrapper">
+								<div id="left">
+									<input style="padding: 3px; margin: 12px 0;" matInput mat-input type="text" placeholder="Group name" (keydown.space)="$event.preventDefault()" size="10" [(ngModel)]="newRoom" (keyup.enter)="createNewRoom()">
+								</div>
+								<div id="right">
+									<button style="margin: 8px 0;" mat-icon-button matTooltip="Create a new group" (click)="createNewRoom()" [disabled]="newRoom === ''">
+										<mat-icon>person_add</mat-icon>
+								</button>
+								</div>
+							</div>
+								
+								
                   <!-- <mat-slide-toggle matTooltip="Make group private" [(ngModel)]="privateGroup"></mat-slide-toggle>
                   <input matInput style="margin-left: 10px;" [type]="showPass ? 'text' : 'password'" placeholder="Password" (keydown.space)="$event.preventDefault()" size="7" *ngIf="privateGroup" [(ngModel)]="password"> -->
                   <!-- <mat-icon matSuffix *ngIf="privateGroup && showPass" (click)="togglePass()">visibility</mat-icon>
                   <mat-icon matSuffix *ngIf="privateGroup && !showPass" (click)="togglePass()">visibility_off</mat-icon> -->
-              </ng-template>
           </mat-tab>
       </mat-tab-group>
       
@@ -82,7 +111,7 @@
       <p>
         <mat-icon>account_circle</mat-icon>
         {{usersInRoom}} Members
-    </p>
+    	</p>
     </div>
 
     <!-- Display de mensajes -->
@@ -91,7 +120,7 @@
       <ion-content>
         <ion-grid>
           <!-- <ion-row *ngFor="let message of messages[selectedRoom]"> -->
-          <ion-row *ngFor="let message of messages">    
+          <ion-row  *ngFor="let message of messages">    
             <ion-col size="9" *ngIf="message.user.name !== username" class="message"
                     [ngClass]="{'my_message': message.user.name === username, 'other_message': message.user.name !== username}">
               <span class="user_name"><strong>{{ message.user.name }}:</strong></span><br>
