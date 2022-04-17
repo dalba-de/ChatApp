@@ -21,7 +21,7 @@
 
 .icon_display {
     font-size: 15px;
-    color: red;
+    color: red !important;
 }
  
 .conversation-header h2, .conversation-header p {
@@ -191,24 +191,31 @@ section .mat-list .mat-list-avatar{
 }
 
 .bckimg {
-    background-image: url("https://theabbie.github.io/blog/assets/official-whatsapp-background-image.jpg") !important;
+    background-image: url("https://qph.fs.quoracdn.net/main-qimg-8b585fb4a5c9fedbb899cfb0cf0331a7") !important;
+    border-radius: 5px;
 }
 
-::ng-deep .mat-tab-list .mat-tab-labels {
-    background-color: lightgreen;
-}
+/* ::ng-deep .mat-tab-list .mat-tab-labels {
+    background-color: rgb(204, 238, 204);
+    background-image: url("https://theabbie.github.io/blog/assets/official-whatsapp-background-image.jpg") !important;
+} */
 
 ::ng-deep .mat-drawer .mat-card {
-    background: lightgreen;
+    background-image: url("https://qph.fs.quoracdn.net/main-qimg-8b585fb4a5c9fedbb899cfb0cf0331a7") !important;
 }
 
 ::ng-deep .mat-card::-webkit-scrollbar {
     display: none;
 }
 
-.parent{
-    opacity: 0.7;
+::placeholder {
+    color: antiquewhite;
 }
-.child{
-    opacity: 1;
+
+.mat-icon {
+    color: rgb(133, 233, 247);
+}
+
+.letters {
+    color: antiquewhite;
 }

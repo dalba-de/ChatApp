@@ -19,21 +19,21 @@ export class ChatComponent implements OnInit {
   @ViewChild(IonContent, {static: false}) content!: IonContent;
 
   selectedRoom: string = '';
-	showRoom: string = '';
-	notificationRoom: string[] = [];
+  showRoom: string = '';
+  notificationRoom: string[] = [];
 
   users: string[] = [];
   allUsers: any = [];
   usersInRoom: number = 0;
-	usersInRoomArr: any = [];
+  usersInRoomArr: any = [];
   username: string = "";
   id: number = 0;
   messages: any = [];
   text: string = '';
   rooms: any = [];
 
-	newRoom: string = '';
-	seekRoom: string = '';
+  newRoom: string = '';
+  seekRoom: string = '';
   
 
   constructor(private socket : Socket, private apiService : ApiService,
