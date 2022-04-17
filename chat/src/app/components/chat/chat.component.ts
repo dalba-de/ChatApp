@@ -241,6 +241,13 @@ name: string	: string */
 
         this.dialog.open(CourseDialogComponent, dialogConfig);
     }
+
+    /**
+     * Listar todas las salas
+     */
+    public openDialogAllRooms() {
+        
+    }
 }
 
 // PROXIMO A HACER: CREAR NUEVAS SALAS. GESTIONAR SALAS PRIVADAS

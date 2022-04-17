@@ -20,6 +20,8 @@ import { MatListModule } from "@angular/material/list";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatDialogModule } from "@angular/material/dialog";
+import { MatButtonModule } from "@angular/material/button";
+
 import { CourseDialogComponent } from './components/course-dialog/course-dialog.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
@@ -53,7 +55,8 @@ const routes : Routes = [
     MatListModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDialogModule
+    MatDialogModule,
+    MatButtonModule
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent]

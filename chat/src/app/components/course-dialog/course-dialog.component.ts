@@ -9,12 +9,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 export class CourseDialogComponent implements OnInit {
 
   description: string = '';
-	seekRoom: string = '';
-	Rooms: string[] = [
-		"General",
-		"Tardis",
-		"42Madrid"
-	]
+  seekRoom: string = '';
 
   constructor(private dialogRef: MatDialogRef<CourseDialogComponent>,
 							@Inject(MAT_DIALOG_DATA) data) {
