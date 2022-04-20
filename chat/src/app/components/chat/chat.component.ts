@@ -33,7 +33,6 @@ export class ChatComponent implements OnInit {
   rooms: any = [];
 
   newRoom: string = '';
-  seekRoom: string = '';
   
 
   constructor(private socket : Socket, private apiService : ApiService,
@@ -226,28 +225,31 @@ name: string	: string */
 	}
 
     /**
-     * Crear Dialog
-     */
-    public openDialog() {
-        const dialogConfig = new MatDialogConfig();
-
-        dialogConfig.disableClose = false;
-        dialogConfig.autoFocus = true;
-
-        dialogConfig.data = {
-            title: 'List of Rooms',
-						seekRoom: this.seekRoom,
-        }
-
-        this.dialog.open(CourseDialogComponent, dialogConfig);
-    }
-
-    /**
      * Listar todas las salas
      */
-    public openDialogAllRooms() {
+    public openDialog() {
+        let rooms : any = [];
+        this.apiService.getGroups().subscribe((result) => {
+            rooms = result;
+
+            const dialogConfig = new MatDialogConfig();
+
+            dialogConfig.disableClose = true;
+            dialogConfig.autoFocus = true;
+
+            dialogConfig.data = {
+                title: 'List of Rooms',
+                list: rooms
+            }
+
+            const dialogRef = this.dialog.open(CourseDialogComponent, dialogConfig);
+
+            dialogRef.afterClosed().subscribe(
+                data => console.log("Dialog output:", data)
+            ); 
+        })
         
-    }
+    }  
 }
 
 // PROXIMO A HACER: CREAR NUEVAS SALAS. GESTIONAR SALAS PRIVADAS

@@ -9,14 +9,23 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 export class CourseDialogComponent implements OnInit {
 
   description: string = '';
-  seekRoom: string = '';
+  rooms: any = [];
 
   constructor(private dialogRef: MatDialogRef<CourseDialogComponent>,
-							@Inject(MAT_DIALOG_DATA) data) {
-								this.description = data.title;
-							 }
+              @Inject(MAT_DIALOG_DATA) data) {
+                this.description = data.title;
+                this.rooms = data.list;
+              }
 
   ngOnInit(): void {
+  }
+
+  save() {
+    console.log(this.rooms);
+  }
+
+  close() {
+    this.dialogRef.close('Hola');
   }
 
 }
