@@ -239,14 +239,20 @@ name: string	: string */
 
             dialogConfig.data = {
                 title: 'List of Rooms',
-                list: rooms
+                list: rooms,
+                username: this.username
             }
 
             const dialogRef = this.dialog.open(CourseDialogComponent, dialogConfig);
 
             dialogRef.afterClosed().subscribe(
-                data => console.log("Dialog output:", data)
-            ); 
+                (data) => {
+                    console.log("Dialog output:", data);
+                    if (data !== undefined) {
+                        this.socket.emit('join-room', {room: data, nickname: this.username})
+                    }
+                }
+            );
         })
         
     }  

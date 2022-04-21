@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { ApiService } from "../../services/api.service";
 
 @Component({
   selector: 'app-course-dialog',
@@ -9,23 +10,60 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 export class CourseDialogComponent implements OnInit {
 
   description: string = '';
+  allRooms: any = [];
   rooms: any = [];
+  username: string = '';
 
-  constructor(private dialogRef: MatDialogRef<CourseDialogComponent>,
+  constructor(private apiService: ApiService,
+              private dialogRef: MatDialogRef<CourseDialogComponent>,
               @Inject(MAT_DIALOG_DATA) data) {
                 this.description = data.title;
-                this.rooms = data.list;
+                this.allRooms = data.list;
+                this.username = data.username;
               }
 
   ngOnInit(): void {
+      for (let i = 0; i < this.allRooms.length; i++) {
+          if (this.allRooms[i].isGroup)
+            this.rooms.push(this.allRooms[i]);
+      }
   }
 
-  save() {
-    console.log(this.rooms);
+  selectRoom(name: string) {
+      let room: any;
+
+      if (confirm("Do you want to join " + name + " room?")) {
+        this.apiService.getRoomByName(name).subscribe((result) => {
+          room = result;
+          console.log(room)
+          for (let i = 0; i < room.users.length; i++) {
+            if (room.users[i].name === this.username) {
+              window.alert("You are already in the room");
+              this.dialogRef.close();
+              return ;
+            }
+          }
+          if (room.private) {
+            let pass = prompt("Please enter password: ")!;
+            if (pass === room.password) {
+              this.dialogRef.close(name);
+              return ;
+            }
+            else {
+              window.alert("Incorrect password, try again!");
+              this.dialogRef.close();
+              return ;
+            }
+          }
+          else
+            this.dialogRef.close(name);
+        });
+      }
+      
   }
 
   close() {
-    this.dialogRef.close('Hola');
+    this.dialogRef.close();
   }
 
 }
