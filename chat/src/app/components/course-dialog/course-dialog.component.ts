@@ -5,7 +5,10 @@ import { ApiService } from "../../services/api.service";
 @Component({
   selector: 'app-course-dialog',
   templateUrl: './course-dialog.component.html',
-  styleUrls: ['./course-dialog.component.css']
+  styleUrls: [
+      '../../../assets/css/bootstrap.min.css',
+      './course-dialog.component.css'
+    ]
 })
 export class CourseDialogComponent implements OnInit {
 
@@ -13,6 +16,9 @@ export class CourseDialogComponent implements OnInit {
   allRooms: any = [];
   rooms: any = [];
   username: string = '';
+  password: string = '';
+
+  hiddenItems:any={};
 
   constructor(private apiService: ApiService,
               private dialogRef: MatDialogRef<CourseDialogComponent>,
@@ -29,37 +35,33 @@ export class CourseDialogComponent implements OnInit {
       }
   }
 
-  selectRoom(name: string) {
-      let room: any;
+  joinRoom(name: string) {
+    let room: any;
 
-      if (confirm("Do you want to join " + name + " room?")) {
-        this.apiService.getRoomByName(name).subscribe((result) => {
-          room = result;
-          console.log(room)
-          for (let i = 0; i < room.users.length; i++) {
-            if (room.users[i].name === this.username) {
-              window.alert("You are already in the room");
-              this.dialogRef.close();
-              return ;
-            }
+    this.apiService.getRoomByName(name).subscribe((result) => {
+        room = result;
+        console.log(room)
+        for (let i = 0; i < room.users.length; i++) {
+          if (room.users[i].name === this.username) {
+            window.alert("You are already in the room");
+            this.dialogRef.close();
+            return ;
           }
-          if (room.private) {
-            let pass = prompt("Please enter password: ")!;
-            if (pass === room.password) {
-              this.dialogRef.close(name);
-              return ;
-            }
-            else {
-              window.alert("Incorrect password, try again!");
-              this.dialogRef.close();
-              return ;
-            }
-          }
-          else
+        }
+        if (room.private) {
+          if (this.password === room.password) {
             this.dialogRef.close(name);
-        });
-      }
-      
+            return ;
+          }
+          else {
+            window.alert("Incorrect password, try again!");
+            this.dialogRef.close();
+            return ;
+          }
+        }
+        else
+          this.dialogRef.close(name);
+      });
   }
 
   close() {

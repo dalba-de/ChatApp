@@ -1,23 +1,48 @@
-<article class="leaderboard">
-    <header mat-dialog-title>
-      <h1 class="leaderboard__title"><span class="leaderboard__title--top">Chat</span><span class="leaderboard__title--bottom">Rooms</span></h1>
-    </header>
-</article>
-    
-<mat-dialog-content>
-    <main class="leaderboard__profiles">
-        <article class="leaderboard__profile" *ngFor="let room of rooms" (click)="selectRoom(room.name)">
-        <mat-icon mat-fab *ngIf="room.private">lock</mat-icon>
-        <mat-icon mat-fab *ngIf="!room.private">public</mat-icon>
-        <span class="leaderboard__name">{{room.name}}</span>
-        <span class="leaderboard__value" *ngIf="room.private">Private</span>
-        <span class="leaderboard__value" *ngIf="!room.private">Public</span>
-        </article>
-    </main>
-</mat-dialog-content>
+<!-- <head>
+    <link rel="stylesheet" href="../../../assets/css/bootstrap.min.css">
+</head> -->
 
-<mat-dialog-actions>
-    <button class="mat-raised-button"(click)="close()">Close</button>
-</mat-dialog-actions>
-    
 
+<body>
+    <script src="../../../../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../../../../node_modules/jquery/dist/jquery.min.js"></script>
+    <article class="leaderboard">
+        <header mat-dialog-title>
+        <h1 class="leaderboard__title"><span class="leaderboard__title--top">Chat </span><span class="leaderboard__title--bottom">Rooms</span></h1>
+        </header>
+    </article>
+        
+    <mat-dialog-content>
+        <div class="user" [ngStyle]="e ? {'background':'#eee'}:{'background':'#fff'}" 
+            *ngFor="let room of rooms;index as i;first as f;last as l;let e=even">
+            <div class="brbt p-3" (click)="hiddenItems[i]=!hiddenItems[i]">        
+                <div class="row">
+                    <div class="col-md-6 col-sm-4">
+                        <div class="info-prime">{{room.name}}</div>
+                        <label *ngIf="!room.private" class="lblsmall">Public</label>
+                        <label *ngIf="room.private" class="lblsmall">Private</label>
+                    </div>
+                    <div class="col-md-6 col-sm-4">
+                        <div><strong>{{room.users.length}}</strong> users in room</div>
+                   </div>
+               </div>
+            </div>
+            <div class="p-3" *ngIf="hiddenItems[i]">
+                <div class="row">
+                    <div class="col-md-6 col-sm-4">
+                        <div style="margin-top: 5px;" *ngIf="!room.private" class="lblsmall">No password needed</div>
+                        <input style="margin-top: 5px;" placeholder="Enter the password" type="password" *ngIf="room.private" [(ngModel)]="password" >
+                    </div>
+                    <div class="col-md-6 col-sm-8 text-right">
+                        <button *ngIf="!room.private" (click)="joinRoom(room.name)" class="btn btn-primary">Join Room</button>
+                        <button *ngIf="room.private" (click)="joinRoom(room.name)" [disabled]="password === ''" class="btn btn-primary">Join Room</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
+        <button class="btn btn-primary" (click)="close()">Close</button>
+    </mat-dialog-actions>
+</body>

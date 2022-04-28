@@ -1,4 +1,4 @@
-.leaderboard {
+/* .leaderboard {
     max-width: 490px;
     width: 100%;
     border-radius: 12px;
@@ -6,7 +6,7 @@
 .leaderboard header {
     --start: 15%;
     height: 130px;
-    /* background-image: repeating-radial-gradient(circle at var(--start), transparent 0%, transparent 10%, rgba(54, 89, 219, .33) 10%, rgba(54, 89, 219, .33) 17%), linear-gradient(to right, #5b7cfa, #3659db); */
+    background-image: repeating-radial-gradient(circle at var(--start), transparent 0%, transparent 10%, rgba(54, 89, 219, .33) 10%, rgba(54, 89, 219, .33) 17%), linear-gradient(to right, #5b7cfa, #3659db);
     background-image: url("https://qph.fs.quoracdn.net/main-qimg-8b585fb4a5c9fedbb899cfb0cf0331a7");
     color: #fff;
     position: relative;
@@ -104,4 +104,62 @@ body {
 }
 .leaderboard {
     box-shadow: 0 0 40px -10px rgba(0, 0, 0, .4);
+} */
+
+
+h2{
+    color: orange;
+}
+.user{    
+    width: 500px;
+    margin: 10px;
+    border-radius: 10px;
+    background-color: #fff;
+    border: 1px solid #eee;
+    transition: box-shadow .5s ease;
+    cursor: pointer;
+    box-shadow: 0 2px 2px rgb(10 16 20 / 24%), 0 0 2px rgb(10 16 20 / 12%);
+    border-radius: 2px;
+}
+.activeUser{
+    background-color: rgb(133, 231, 133);
+}
+.inactiveUser{
+    background-color: rgb(255, 242, 242);
+}
+.fs-20{
+    font-size: 20px;
+}
+.brbt{
+    border-bottom:1px solid #beb1b1;
+}
+.lblsmall{
+    color: rgb(108,124,142);
+}
+.info-prime{
+    color: rgb(35,59,87);
+    font-size: 1.5rem;
+}
+.info{
+    color: rgb(83,93,105);
+    font-weight: 500;
+}
+.user:hover{
+    box-shadow: 0 2px 2px rgb(10 16 20 / 24%), 0 0 2px rgb(10 16 20 / 12%);
+}
+
+.userContainer{
+    padding: 10px;
+}
+
+#wrapper {
+    display: flex;
+}
+
+#left {
+    flex: 0 0 70%;
+}
+
+#right {
+    flex: 1;
 }
