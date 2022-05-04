@@ -9,6 +9,7 @@ import { UpdateUserDto } from "./users/dto/update-user.dto";
 import { CreateMessageDto } from "./messages/dto/create-message.dto";
 import { CreateRoomDto } from "./rooms/dto/create-room.dto";
 import { UpdateRoomDto } from "./rooms/dto/update-room.dto";
+import { UpdateStatusDto } from "./users/dto/update-status.dto";
 import { User } from "./users/entities/user.entity";
 
 @WebSocketGateway({ cors: true })
@@ -42,7 +43,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.logger.log("User Connected!");
   }
 
-  handleDisconnect(client: any) {
+  async handleDisconnect(client: any) {
+    let user: any = await this.usersService.findBySocket(client.id);
+    
+    let updateStatus: UpdateStatusDto;
+    updateStatus = {
+      id: user.id,
+      online: false
+    }
+    this.usersService.updateStatus(updateStatus);
+    this.wss.emit('users');
     this.logger.log("User Disconnected!")
   }
 
@@ -52,7 +62,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     let newUser : CreateUserDto;
     newUser = {
       socket : client.id,
-      name : data.nickname
+      name : data.nickname,
+      online : true
     }
 
     await this.usersService.create(newUser);
@@ -108,7 +119,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     let updateUser : UpdateUserDto;
     updateUser = {
       id: data.id,
-      socket : client.id
+      socket : client.id,
+      online: true
     }
     this.usersService.updateUser(updateUser);
   }

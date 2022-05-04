@@ -21,8 +21,12 @@ export class ChatComponent implements OnInit {
   selectedRoom: string = '';
   showRoom: string = '';
   notificationRoom: string[] = [];
+  showPass: boolean = false;
+  privateGroup: boolean = false;
+  password: string = '';
 
-  users: string[] = [];
+  //users: string[] = [];
+  users: any = [];
   allUsers: any = [];
   usersInRoom: number = 0;
   usersInRoomArr: any = [];
@@ -52,7 +56,8 @@ export class ChatComponent implements OnInit {
       this.allUsers = result;
       for (let i = 0; i < this.allUsers.length; i++) {
         if (this.allUsers[i].name !== this.username)
-          this.users.push(this.allUsers[i].name);
+          //this.users.push(this.allUsers[i].name);
+          this.users.push(this.allUsers[i]);
       }
     })
 
@@ -67,7 +72,8 @@ export class ChatComponent implements OnInit {
         this.allUsers = result;
         for (let i = 0; i < this.allUsers.length; i++) {
           if (this.allUsers[i].name !== this.username)
-            this.users.push(this.allUsers[i].name);
+            //this.users.push(this.allUsers[i].name);
+            this.users.push(this.allUsers[i]);
           if (this.allUsers[i].name === this.username) {
             this.id = this.allUsers[i].id;
             flag = 1;
@@ -100,7 +106,8 @@ export class ChatComponent implements OnInit {
         this.allUsers = result;
         for (let i = 0; i < this.allUsers.length; i++) {
           if (this.allUsers[i].name !== this.username)
-            this.users.push(this.allUsers[i].name);
+            //this.users.push(this.allUsers[i].name);
+            this.users.push(this.allUsers[i]);
         }
       })
     })
@@ -224,38 +231,44 @@ name: string	: string */
 		return false;
 	}
 
-    /**
-     * Listar todas las salas
-     */
-    public openDialog() {
-        let rooms : any = [];
-        this.apiService.getGroups().subscribe((result) => {
-            rooms = result;
+  /**
+   * Listar todas las salas
+   */
+  public openDialog() {
+      let rooms : any = [];
+      this.apiService.getGroups().subscribe((result) => {
+          rooms = result;
 
-            const dialogConfig = new MatDialogConfig();
+          const dialogConfig = new MatDialogConfig();
 
-            dialogConfig.disableClose = true;
-            dialogConfig.autoFocus = true;
+          dialogConfig.disableClose = true;
+          dialogConfig.autoFocus = true;
 
-            dialogConfig.data = {
-                title: 'List of Rooms',
-                list: rooms,
-                username: this.username
-            }
+          dialogConfig.data = {
+              title: 'List of Rooms',
+              list: rooms,
+              username: this.username
+          }
 
-            const dialogRef = this.dialog.open(CourseDialogComponent, dialogConfig);
+          const dialogRef = this.dialog.open(CourseDialogComponent, dialogConfig);
 
-            dialogRef.afterClosed().subscribe(
-                (data) => {
-                    console.log("Dialog output:", data);
-                    if (data !== undefined) {
-                        this.socket.emit('join-room', {room: data, nickname: this.username})
-                    }
-                }
-            );
-        })
-        
-    }  
+          dialogRef.afterClosed().subscribe(
+              (data) => {
+                  console.log("Dialog output:", data);
+                  if (data !== undefined) {
+                      this.socket.emit('join-room', {room: data, nickname: this.username})
+                  }
+              }
+          );
+      })
+  }
+  
+  /**
+   * Función para mostrar contraseña al crear salas
+   */
+  public togglePass() {
+    this.showPass = !this.showPass;
+  }
 }
 
 // PROXIMO A HACER: CREAR NUEVAS SALAS. GESTIONAR SALAS PRIVADAS

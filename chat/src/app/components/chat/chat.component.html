@@ -30,8 +30,8 @@
           </ng-template>
           <mat-list class="conversations">
             <mat-list-item *ngFor="let user of users" (click)="userToUser(user)">
-              <mat-icon matListIcon style="font-size: 15px;">person</mat-icon>
-              <p class="letters">{{user}}</p>
+              <mat-icon *ngIf="user.online" matListIcon style="font-size: 15px;">person</mat-icon>
+              <p *ngIf="user.online" class="letters">{{user.name}}</p>
             </mat-list-item>
           </mat-list>
         </mat-tab>
@@ -66,20 +66,21 @@
             </ng-template>
             <div id="wrapper">
                 <div id="left">
-                    <input style="padding: 3px; margin: 12px 0; color: antiquewhite;" matInput mat-input type="text" placeholder="Group name" (keydown.space)="$event.preventDefault()" size="10" [(ngModel)]="newRoom" (keyup.enter)="createNewRoom()">
+                    <input style="padding: 3px; margin: 12px 0; color: antiquewhite;" matInput mat-input type="text" placeholder="Group name" (keydown.space)="$event.preventDefault()" size="10" [(ngModel)]="newRoom" (keyup.enter)="createNewRoom()" autocomplete="off">
+                    <input matInput style="padding: 3px; margin: 12px 0; color: antiquewhite;" [type]="showPass ? 'text' : 'password'" placeholder="Password" (keydown.space)="$event.preventDefault()" size="7" *ngIf="privateGroup" [(ngModel)]="password">
                 </div>
+                
                 <div id="right">
-                    <button style="margin: 8px 0;" mat-icon-button matTooltip="Create a new group" (click)="createNewRoom()" [disabled]="newRoom === ''">
+                    <button style="margin: 8px 0; margin-left: 50px;" mat-icon-button matTooltip="Create a new group" (click)="createNewRoom()" [disabled]="newRoom === ''">
                         <mat-icon>person_add</mat-icon>
-                </button>
+                    </button>
+                </div>
+                <mat-icon style="margin-top: 60px; margin-right: 50px;" matSuffix matTooltip="Hide Password" *ngIf="privateGroup && showPass" (click)="togglePass()">visibility</mat-icon>
+                <mat-icon style="margin-top: 60px; margin-right: 50px;" matSuffix matTooltip="Show Password" *ngIf="privateGroup && !showPass" (click)="togglePass()">visibility_off</mat-icon>
+                <div id="left">
+                    <mat-slide-toggle style="padding: 3px; margin: 12px 0;" matTooltip="Make group private" [(ngModel)]="privateGroup"></mat-slide-toggle>
                 </div>
             </div>
-								
-								
-                  <!-- <mat-slide-toggle matTooltip="Make group private" [(ngModel)]="privateGroup"></mat-slide-toggle>
-                  <input matInput style="margin-left: 10px;" [type]="showPass ? 'text' : 'password'" placeholder="Password" (keydown.space)="$event.preventDefault()" size="7" *ngIf="privateGroup" [(ngModel)]="password"> -->
-                  <!-- <mat-icon matSuffix *ngIf="privateGroup && showPass" (click)="togglePass()">visibility</mat-icon>
-                  <mat-icon matSuffix *ngIf="privateGroup && !showPass" (click)="togglePass()">visibility_off</mat-icon> -->
           </mat-tab>
       </mat-tab-group>
       

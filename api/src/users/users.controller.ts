@@ -23,6 +23,11 @@ export class UsersController {
     return this.usersService.findByName(name);
   }
 
+  @Get(':socket/socket')
+  findBySocket(@Param('socket') socket) {
+      return this.usersService.findBySocket(socket);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);

@@ -13,6 +13,9 @@ export class User {
     @Column({unique: true})
     name: string;
 
+    @Column()
+    online: boolean;
+
     @OneToMany(() => Message, (message) => message.user)
     messages: Message[];
 
