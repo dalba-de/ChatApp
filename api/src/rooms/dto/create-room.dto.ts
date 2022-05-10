@@ -4,4 +4,5 @@ export class CreateRoomDto {
     isGroup: boolean
     password: string
     users: any[]
+    admin: any
 }

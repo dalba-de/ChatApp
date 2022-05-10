@@ -33,7 +33,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
             private: false,
             isGroup: true,
             password: null,
-            users: null
+            users: null,
+            admin: null
         }
         this.roomService.create(newRoom);
     }    
@@ -159,10 +160,32 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
         private: false,
         isGroup: false,
         password: null,
-        users: users
+        users: users,
+        admin: null
     }
     this.roomService.create(newRoom);
     client.emit('joined-room');
     client.broadcast.to(other_user.socket).emit('joined-room');
+  }
+
+  @SubscribeMessage('create-room')
+  async createRoom(client: Socket, data : {room: string, myUser: string}) {
+    let user: any = await this.usersService.findByName(data.myUser);
+    let users: any[] = [];
+
+    users.push({"id": user.id});
+
+    let newRoom : CreateRoomDto = {
+        name: data.room,
+        private: false,
+        isGroup: true,
+        password: null,
+        users: users,
+        admin: user.id
+    }
+
+    await this.roomService.create(newRoom);
+    client.join(data.room);
+    this.wss.emit('joined-room');
   }
 }

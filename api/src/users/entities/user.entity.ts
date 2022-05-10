@@ -19,6 +19,9 @@ export class User {
     @OneToMany(() => Message, (message) => message.user)
     messages: Message[];
 
+    @OneToMany(() => Room, (adminRooms: Room) => adminRooms.admin)
+    adminRooms: Room[];
+
     @ManyToMany(() => Room, (room: Room) => room.users)
     rooms: Room;
 }

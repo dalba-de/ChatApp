@@ -161,8 +161,8 @@ export class ChatComponent implements OnInit {
 	 */
   updateSelectedRoom(name: string) {
 
-		//Obtiene los mensajes de la sala seleccionada
-		this.selectedRoom = name;
+    //Obtiene los mensajes de la sala seleccionada
+    this.selectedRoom = name;
     this.apiService.getMessagesByRoom(name).subscribe((result) => {
         this.messages = [];
         this.messages = result;
@@ -200,7 +200,9 @@ export class ChatComponent implements OnInit {
 	 * Crea una nueva sala
 	 */
 	public createNewRoom() {
-		console.log(this.newRoom)
+		console.log(this.newRoom);
+
+        this.socket.emit('create-room', {room: this.newRoom, myUser: this.username});
 	}
 
 	/**
