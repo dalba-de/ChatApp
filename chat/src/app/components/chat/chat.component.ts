@@ -202,7 +202,8 @@ export class ChatComponent implements OnInit {
 	public createNewRoom() {
 		console.log(this.newRoom);
 
-        this.socket.emit('create-room', {room: this.newRoom, myUser: this.username});
+        // this.socket.emit('create-room', {room: this.newRoom, myUser: this.username});
+        this.socket.emit('create-room', {room: this.newRoom, myUser: this.username, password: this.password});
 	}
 
 	/**

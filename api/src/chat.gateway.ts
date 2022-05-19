@@ -168,18 +168,51 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     client.broadcast.to(other_user.socket).emit('joined-room');
   }
 
+//   @SubscribeMessage('create-room')
+//   async createRoom(client: Socket, data : {room: string, myUser: string, password: string}) {
+//     let user: any = await this.usersService.findByName(data.myUser);
+//     let users: any[] = [];
+
+//     users.push({"id": user.id});
+
+//     let newRoom : CreateRoomDto = {
+//         name: data.room,
+//         private: false,
+//         isGroup: true,
+//         password: null,
+//         users: users,
+//         admin: user.id
+//     }
+
+//     await this.roomService.create(newRoom);
+//     client.join(data.room);
+//     this.wss.emit('joined-room');
+//   }
+
   @SubscribeMessage('create-room')
-  async createRoom(client: Socket, data : {room: string, myUser: string}) {
+  async createRoom(client: Socket, data : {room: string, myUser: string, password: string}) {
     let user: any = await this.usersService.findByName(data.myUser);
     let users: any[] = [];
+    let pass: string;
+    let priv: boolean;
+
+    if (!data.password) {
+        pass = null;
+        priv = false;
+    }       
+    else {
+        pass = data.password;
+        priv = true;
+    }
+        
 
     users.push({"id": user.id});
 
     let newRoom : CreateRoomDto = {
         name: data.room,
-        private: false,
+        private: priv,
         isGroup: true,
-        password: null,
+        password: pass,
         users: users,
         admin: user.id
     }
