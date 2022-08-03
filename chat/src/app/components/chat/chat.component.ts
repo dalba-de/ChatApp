@@ -28,6 +28,7 @@ export class ChatComponent implements OnInit {
   //users: string[] = [];
   users: any = [];
   allUsers: any = [];
+  realUsers: number = 0;
   usersInRoom: number = 0;
   usersInRoomArr: any = [];
   username: string = "";
@@ -54,10 +55,13 @@ export class ChatComponent implements OnInit {
     this.users = [];
     this.apiService.getUsers().subscribe((result) =>{
       this.allUsers = result;
+      this.realUsers = 0;
       for (let i = 0; i < this.allUsers.length; i++) {
         if (this.allUsers[i].name !== this.username)
           //this.users.push(this.allUsers[i].name);
           this.users.push(this.allUsers[i]);
+        if (this.allUsers[i].online)
+          this.realUsers++;
       }
     })
 
@@ -70,6 +74,7 @@ export class ChatComponent implements OnInit {
       this.users = [];
       this.apiService.getUsers().subscribe((result) => {
         this.allUsers = result;
+        this.realUsers = 1;
         for (let i = 0; i < this.allUsers.length; i++) {
           if (this.allUsers[i].name !== this.username)
             //this.users.push(this.allUsers[i].name);
@@ -78,6 +83,8 @@ export class ChatComponent implements OnInit {
             this.id = this.allUsers[i].id;
             flag = 1;
           }
+          if (this.allUsers[i].online)
+            this.realUsers++;
         }
         if (!flag) {
           // Si es la primera vez, creamos el usuario
@@ -104,10 +111,13 @@ export class ChatComponent implements OnInit {
       this.users = [];
       this.apiService.getUsers().subscribe((result) => {
         this.allUsers = result;
+        this.realUsers = 0;
         for (let i = 0; i < this.allUsers.length; i++) {
           if (this.allUsers[i].name !== this.username)
             //this.users.push(this.allUsers[i].name);
             this.users.push(this.allUsers[i]);
+          if (this.allUsers[i].online)
+            this.realUsers++;
         }
       })
     })
