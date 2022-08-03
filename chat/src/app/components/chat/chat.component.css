@@ -219,3 +219,18 @@ section .mat-list .mat-list-avatar{
 .letters {
     color: antiquewhite;
 }
+
+div.t {
+    display: table;
+    width: 200px;
+    height: 100px;
+}
+
+div.u {
+    display: table-cell;
+    width: 100%;
+}
+
+div.u > input {
+    width: 100%;
+}
