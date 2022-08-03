@@ -67,3 +67,5 @@ elección.
 
 ## Ejemplo
 
+![Screenshot](https://user-images.githubusercontent.com/57690316/182557009-331a5c20-7ba1-4d9a-8a48-26d8c30077ca.png)
+
