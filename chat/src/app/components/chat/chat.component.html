@@ -84,6 +84,10 @@
           <h2 class="letters title">Users in group {{showRoom}}</h2>
           <mat-list-item *ngFor="let user of usersInRoomArr">
             <p class="letters">{{user.name}}</p>
+            <button class="fixedbutton" *ngIf="room.admin.name === username" mat-icon-button>
+              <mat-icon matTooltip="Silence User">voice_over_off</mat-icon>
+              <mat-icon style="margin-left: 10px;" matTooltip="Ban User"> cancel_presentation</mat-icon>
+            </button>
           </mat-list-item>
       </mat-list>
     </mat-card>

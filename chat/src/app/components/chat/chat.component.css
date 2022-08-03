@@ -234,3 +234,8 @@ div.u {
 div.u > input {
     width: 100%;
 }
+
+button.fixedbutton {
+    position: fixed;
+    right: 100px;
+}

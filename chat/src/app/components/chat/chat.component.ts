@@ -31,6 +31,7 @@ export class ChatComponent implements OnInit {
   realUsers: number = 0;
   usersInRoom: number = 0;
   usersInRoomArr: any = [];
+  room: any = [];
   username: string = "";
   id: number = 0;
   messages: any = [];
@@ -179,12 +180,14 @@ export class ChatComponent implements OnInit {
     })
 
 		// Calcula el numero de usuarios presentes y el nombre en la sala seleccionada
-    let room: any;
+    // let room: any;
     this.apiService.getRoomByName(name).subscribe((result) => {
-        room = result;
-        this.usersInRoom = room.users.length;
-				this.usersInRoomArr = room.users;
-				if (room.isGroup)
+        this.room = result;
+        this.usersInRoom = this.room.users.length;
+				this.usersInRoomArr = this.room.users;
+        console.log(this.usersInRoomArr)
+        console.log(this.room);
+				if (this.room.isGroup)
 					this.showRoom = name;
 				else
 					this.showRoom = this.splitName(name);
