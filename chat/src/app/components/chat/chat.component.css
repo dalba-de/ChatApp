@@ -209,7 +209,7 @@ section .mat-list .mat-list-avatar{
 }
 
 ::placeholder {
-    color: antiquewhite;
+    color: rgba(250, 235, 215, 0.5);
 }
 
 .mat-icon {

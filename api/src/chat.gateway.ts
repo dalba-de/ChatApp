@@ -204,7 +204,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
         pass = data.password;
         priv = true;
     }
-        
 
     users.push({"id": user.id});
 
