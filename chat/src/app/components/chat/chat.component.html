@@ -32,7 +32,7 @@
             <mat-list-item *ngFor="let user of users">
               <mat-icon (click)="userToUser(user.name)" *ngIf="user.online" matListIcon style="font-size: 15px; position: relative; margin-top: 8px;">person</mat-icon>
               <p (click)="userToUser(user.name)" *ngIf="user.online" class="letters">{{user.name}}</p>
-              <mat-icon matTooltip="Silence User" style="font-size: 15px; position: relative; margin-top: 8px; margin-left: 200px;">voice_over_off</mat-icon>
+              <mat-icon (click)="muteUser(user.name)" matTooltip="Mute User" style="font-size: 15px; position: absolute; margin-top: 8px; left: 200px;">voice_over_off</mat-icon>
             </mat-list-item>
           </mat-list>
         </mat-tab>
@@ -86,7 +86,7 @@
           <mat-list-item *ngFor="let user of usersInRoomArr">
             <p class="letters">{{user.name}}</p>
             <button class="fixedbutton" *ngIf="room.admin && room.admin.name === username" mat-icon-button>
-              <mat-icon matTooltip="Silence User">voice_over_off</mat-icon>
+              <mat-icon matTooltip="Mute User">voice_over_off</mat-icon>
               <mat-icon style="margin-left: 10px;" matTooltip="Ban User"> cancel_presentation</mat-icon>
             </button>
           </mat-list-item>

@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateMutesDto } from "./dto/update-mutes.dto";
 import { User } from "./entities/user.entity";
 
 @Controller('users')
@@ -32,6 +33,11 @@ export class UsersController {
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
+
+  // @Patch('/updateMutes')
+  // updateUsers(@Body() updateMutesDto: UpdateMutesDto) {
+  //   return this.usersService.updateMutes(updateMutesDto);
+  // }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {

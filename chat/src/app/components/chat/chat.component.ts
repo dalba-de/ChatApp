@@ -285,6 +285,17 @@ name: string	: string */
   public togglePass() {
     this.showPass = !this.showPass;
   }
+
+  /**
+   * Función utilizada para silenciar a otros usuarios
+   */
+  public muteUser(name: string) {
+    if (confirm("Do you want to mute " + name + "?")) {
+      console.log("Has silenciado a " + name);
+      //this.socket.emit('mute-user', {myUser: this.username, mutedUser: name});
+    }
+    
+  }
 }
 
 // PROXIMO A HACER: CREAR NUEVAS SALAS. GESTIONAR SALAS PRIVADAS

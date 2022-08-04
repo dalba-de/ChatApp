@@ -27,7 +27,6 @@ export class Room {
     @JoinColumn()
     admin: User;
 
-
     @OneToMany(() => Message, (message) => message.room)
     messages: Message[];
 

@@ -10,6 +10,7 @@ import { CreateMessageDto } from "./messages/dto/create-message.dto";
 import { CreateRoomDto } from "./rooms/dto/create-room.dto";
 import { UpdateRoomDto } from "./rooms/dto/update-room.dto";
 import { UpdateStatusDto } from "./users/dto/update-status.dto";
+import { UpdateMutesDto } from "./users/dto/update-mutes.dto";
 import { User } from "./users/entities/user.entity";
 
 @WebSocketGateway({ cors: true })
@@ -105,6 +106,38 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     client.join(data.room);
     this.wss.emit('joined-room');
   }
+
+  // async createArray(data: any[]): Promise<any[]> {
+  //   let users: any[] = [];
+
+  //   if (!data)
+  //     for (let i in data) {
+  //       users.push(data[i].name);
+  //     }
+  //   else
+  //     users = data;
+    
+  //   return users;
+  // }
+
+  // @SubscribeMessage('mute-user')
+  // async muteUser(client: Socket, data : {myUser: string, mutedUser: string}) {
+  //   let user: any = await this.usersService.findByName(data.myUser);
+  //   console.log(user);
+  //   let otherUser: any = await this.usersService.findByName(data.mutedUser);
+
+  //   let users: any[] = await this.createArray(user.mutes);
+  //   if (users.indexOf(otherUser.name) > -1)
+  //     return ;
+  //   users.push(otherUser.name);
+
+  //   let updateMutes: UpdateMutesDto;
+  //   updateMutes = {
+  //     id: user.id,
+  //     mutes: users
+  //   }
+  //   await this.usersService.updateMutes(updateMutes);
+  // }
 
   @SubscribeMessage('rejoin-room')
   async rejoinRoom(client: Socket, data : {nickname: string}) {

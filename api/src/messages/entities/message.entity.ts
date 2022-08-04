@@ -15,7 +15,7 @@ export class Message {
         eager: true
     })
     user: User;
-
+    
     @ManyToOne(() => Room, (room) => room.messages, {
         cascade: true,
         eager: true
