@@ -29,9 +29,10 @@
             <mat-icon matListIcon>people</mat-icon>
           </ng-template>
           <mat-list class="conversations">
-            <mat-list-item *ngFor="let user of users" (click)="userToUser(user.name)">
-              <mat-icon *ngIf="user.online" matListIcon style="font-size: 15px;">person</mat-icon>
-              <p *ngIf="user.online" class="letters">{{user.name}}</p>
+            <mat-list-item *ngFor="let user of users">
+              <mat-icon (click)="userToUser(user.name)" *ngIf="user.online" matListIcon style="font-size: 15px; position: relative; margin-top: 8px;">person</mat-icon>
+              <p (click)="userToUser(user.name)" *ngIf="user.online" class="letters">{{user.name}}</p>
+              <mat-icon matTooltip="Silence User" style="font-size: 15px; position: relative; margin-top: 8px; margin-left: 200px;">voice_over_off</mat-icon>
             </mat-list-item>
           </mat-list>
         </mat-tab>
