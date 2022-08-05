@@ -7,4 +7,5 @@ export class UpdateUserDto {
     id: number;
     // name: string;
     socket: string;
+    online: boolean;
 }

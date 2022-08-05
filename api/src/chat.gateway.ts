@@ -9,6 +9,8 @@ import { UpdateUserDto } from "./users/dto/update-user.dto";
 import { CreateMessageDto } from "./messages/dto/create-message.dto";
 import { CreateRoomDto } from "./rooms/dto/create-room.dto";
 import { UpdateRoomDto } from "./rooms/dto/update-room.dto";
+import { UpdateStatusDto } from "./users/dto/update-status.dto";
+import { UpdateMutesDto } from "./users/dto/update-mutes.dto";
 import { User } from "./users/entities/user.entity";
 
 @WebSocketGateway({ cors: true })
@@ -32,7 +34,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
             private: false,
             isGroup: true,
             password: null,
-            users: null
+            users: null,
+            admin: null
         }
         this.roomService.create(newRoom);
     }    
@@ -42,7 +45,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.logger.log("User Connected!");
   }
 
-  handleDisconnect(client: any) {
+  async handleDisconnect(client: any) {
+    let user: any = await this.usersService.findBySocket(client.id);
+    
+    let updateStatus: UpdateStatusDto;
+    updateStatus = {
+      id: user.id,
+      online: false
+    }
+    this.usersService.updateStatus(updateStatus);
+    this.wss.emit('users');
     this.logger.log("User Disconnected!")
   }
 
@@ -52,7 +64,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     let newUser : CreateUserDto;
     newUser = {
       socket : client.id,
-      name : data.nickname
+      name : data.nickname,
+      online : true
     }
 
     await this.usersService.create(newUser);
@@ -94,6 +107,38 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.wss.emit('joined-room');
   }
 
+  // async createArray(data: any[]): Promise<any[]> {
+  //   let users: any[] = [];
+
+  //   if (!data)
+  //     for (let i in data) {
+  //       users.push(data[i].name);
+  //     }
+  //   else
+  //     users = data;
+    
+  //   return users;
+  // }
+
+  // @SubscribeMessage('mute-user')
+  // async muteUser(client: Socket, data : {myUser: string, mutedUser: string}) {
+  //   let user: any = await this.usersService.findByName(data.myUser);
+  //   console.log(user);
+  //   let otherUser: any = await this.usersService.findByName(data.mutedUser);
+
+  //   let users: any[] = await this.createArray(user.mutes);
+  //   if (users.indexOf(otherUser.name) > -1)
+  //     return ;
+  //   users.push(otherUser.name);
+
+  //   let updateMutes: UpdateMutesDto;
+  //   updateMutes = {
+  //     id: user.id,
+  //     mutes: users
+  //   }
+  //   await this.usersService.updateMutes(updateMutes);
+  // }
+
   @SubscribeMessage('rejoin-room')
   async rejoinRoom(client: Socket, data : {nickname: string}) {
       let rooms: any = await this.roomService.findUsersInRoom(data.nickname);
@@ -108,7 +153,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     let updateUser : UpdateUserDto;
     updateUser = {
       id: data.id,
-      socket : client.id
+      socket : client.id,
+      online: true
     }
     this.usersService.updateUser(updateUser);
   }
@@ -147,10 +193,64 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
         private: false,
         isGroup: false,
         password: null,
-        users: users
+        users: users,
+        admin: null
     }
     this.roomService.create(newRoom);
     client.emit('joined-room');
     client.broadcast.to(other_user.socket).emit('joined-room');
+  }
+
+//   @SubscribeMessage('create-room')
+//   async createRoom(client: Socket, data : {room: string, myUser: string, password: string}) {
+//     let user: any = await this.usersService.findByName(data.myUser);
+//     let users: any[] = [];
+
+//     users.push({"id": user.id});
+
+//     let newRoom : CreateRoomDto = {
+//         name: data.room,
+//         private: false,
+//         isGroup: true,
+//         password: null,
+//         users: users,
+//         admin: user.id
+//     }
+
+//     await this.roomService.create(newRoom);
+//     client.join(data.room);
+//     this.wss.emit('joined-room');
+//   }
+
+  @SubscribeMessage('create-room')
+  async createRoom(client: Socket, data : {room: string, myUser: string, password: string}) {
+    let user: any = await this.usersService.findByName(data.myUser);
+    let users: any[] = [];
+    let pass: string;
+    let priv: boolean;
+
+    if (!data.password) {
+        pass = null;
+        priv = false;
+    }       
+    else {
+        pass = data.password;
+        priv = true;
+    }
+
+    users.push({"id": user.id});
+
+    let newRoom : CreateRoomDto = {
+        name: data.room,
+        private: priv,
+        isGroup: true,
+        password: pass,
+        users: users,
+        admin: user.id
+    }
+
+    await this.roomService.create(newRoom);
+    client.join(data.room);
+    this.wss.emit('joined-room');
   }
 }

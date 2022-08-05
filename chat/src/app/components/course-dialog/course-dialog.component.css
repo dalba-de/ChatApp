@@ -106,6 +106,10 @@ body {
     box-shadow: 0 0 40px -10px rgba(0, 0, 0, .4);
 } */
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> c303e41eda958c10675c7c8b3ddfc0d577fa94a9
 h2{
     color: orange;
 }
@@ -145,8 +149,27 @@ h2{
 }
 .user:hover{
     box-shadow: 0 2px 2px rgb(10 16 20 / 24%), 0 0 2px rgb(10 16 20 / 12%);
+<<<<<<< HEAD
 }
 
 .userContainer{
     padding: 10px;
+=======
+}
+
+.userContainer{
+    padding: 10px;
+}
+
+#wrapper {
+    display: flex;
+}
+
+#left {
+    flex: 0 0 70%;
+}
+
+#right {
+    flex: 1;
+>>>>>>> c303e41eda958c10675c7c8b3ddfc0d577fa94a9
 }

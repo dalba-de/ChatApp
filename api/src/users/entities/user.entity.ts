@@ -13,9 +13,22 @@ export class User {
     @Column({unique: true})
     name: string;
 
+    @Column()
+    online: boolean;
+
+    // @Column('text', { array: true, nullable: true })
+    // mutes: string[]
+
     @OneToMany(() => Message, (message) => message.user)
     messages: Message[];
 
+    @OneToMany(() => Room, (adminRooms: Room) => adminRooms.admin)
+    adminRooms: Room[];
+
     @ManyToMany(() => Room, (room: Room) => room.users)
     rooms: Room;
+
+    @ManyToMany(() => User, (user: User) => user.mutes)
+    @JoinTable()
+    mutes: User[]
 }

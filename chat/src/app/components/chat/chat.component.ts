@@ -21,11 +21,17 @@ export class ChatComponent implements OnInit {
   selectedRoom: string = '';
   showRoom: string = '';
   notificationRoom: string[] = [];
+  showPass: boolean = false;
+  privateGroup: boolean = false;
+  password: string = '';
 
-  users: string[] = [];
+  //users: string[] = [];
+  users: any = [];
   allUsers: any = [];
+  realUsers: number = 0;
   usersInRoom: number = 0;
   usersInRoomArr: any = [];
+  room: any = [];
   username: string = "";
   id: number = 0;
   messages: any = [];
@@ -50,9 +56,13 @@ export class ChatComponent implements OnInit {
     this.users = [];
     this.apiService.getUsers().subscribe((result) =>{
       this.allUsers = result;
+      this.realUsers = 0;
       for (let i = 0; i < this.allUsers.length; i++) {
         if (this.allUsers[i].name !== this.username)
-          this.users.push(this.allUsers[i].name);
+          //this.users.push(this.allUsers[i].name);
+          this.users.push(this.allUsers[i]);
+        if (this.allUsers[i].online)
+          this.realUsers++;
       }
     })
 
@@ -65,13 +75,17 @@ export class ChatComponent implements OnInit {
       this.users = [];
       this.apiService.getUsers().subscribe((result) => {
         this.allUsers = result;
+        this.realUsers = 1;
         for (let i = 0; i < this.allUsers.length; i++) {
           if (this.allUsers[i].name !== this.username)
-            this.users.push(this.allUsers[i].name);
+            //this.users.push(this.allUsers[i].name);
+            this.users.push(this.allUsers[i]);
           if (this.allUsers[i].name === this.username) {
             this.id = this.allUsers[i].id;
             flag = 1;
           }
+          if (this.allUsers[i].online)
+            this.realUsers++;
         }
         if (!flag) {
           // Si es la primera vez, creamos el usuario
@@ -98,9 +112,13 @@ export class ChatComponent implements OnInit {
       this.users = [];
       this.apiService.getUsers().subscribe((result) => {
         this.allUsers = result;
+        this.realUsers = 0;
         for (let i = 0; i < this.allUsers.length; i++) {
           if (this.allUsers[i].name !== this.username)
-            this.users.push(this.allUsers[i].name);
+            //this.users.push(this.allUsers[i].name);
+            this.users.push(this.allUsers[i]);
+          if (this.allUsers[i].online)
+            this.realUsers++;
         }
       })
     })
@@ -154,20 +172,22 @@ export class ChatComponent implements OnInit {
 	 */
   updateSelectedRoom(name: string) {
 
-		//Obtiene los mensajes de la sala seleccionada
-		this.selectedRoom = name;
+    //Obtiene los mensajes de la sala seleccionada
+    this.selectedRoom = name;
     this.apiService.getMessagesByRoom(name).subscribe((result) => {
         this.messages = [];
         this.messages = result;
     })
 
 		// Calcula el numero de usuarios presentes y el nombre en la sala seleccionada
-    let room: any;
+    // let room: any;
     this.apiService.getRoomByName(name).subscribe((result) => {
-        room = result;
-        this.usersInRoom = room.users.length;
-				this.usersInRoomArr = room.users;
-				if (room.isGroup)
+        this.room = result;
+        this.usersInRoom = this.room.users.length;
+				this.usersInRoomArr = this.room.users;
+        console.log(this.usersInRoomArr)
+        console.log(this.room);
+				if (this.room.isGroup)
 					this.showRoom = name;
 				else
 					this.showRoom = this.splitName(name);
@@ -193,7 +213,10 @@ export class ChatComponent implements OnInit {
 	 * Crea una nueva sala
 	 */
 	public createNewRoom() {
-		console.log(this.newRoom)
+		console.log(this.newRoom);
+
+        // this.socket.emit('create-room', {room: this.newRoom, myUser: this.username});
+        this.socket.emit('create-room', {room: this.newRoom, myUser: this.username, password: this.password});
 	}
 
 	/**
@@ -224,38 +247,55 @@ name: string	: string */
 		return false;
 	}
 
-    /**
-     * Listar todas las salas
-     */
-    public openDialog() {
-        let rooms : any = [];
-        this.apiService.getGroups().subscribe((result) => {
-            rooms = result;
+  /**
+   * Listar todas las salas
+   */
+  public openDialog() {
+      let rooms : any = [];
+      this.apiService.getGroups().subscribe((result) => {
+          rooms = result;
 
-            const dialogConfig = new MatDialogConfig();
+          const dialogConfig = new MatDialogConfig();
 
-            dialogConfig.disableClose = true;
-            dialogConfig.autoFocus = true;
+          dialogConfig.disableClose = true;
+          dialogConfig.autoFocus = true;
 
-            dialogConfig.data = {
-                title: 'List of Rooms',
-                list: rooms,
-                username: this.username
-            }
+          dialogConfig.data = {
+              title: 'List of Rooms',
+              list: rooms,
+              username: this.username
+          }
 
-            const dialogRef = this.dialog.open(CourseDialogComponent, dialogConfig);
+          const dialogRef = this.dialog.open(CourseDialogComponent, dialogConfig);
 
-            dialogRef.afterClosed().subscribe(
-                (data) => {
-                    console.log("Dialog output:", data);
-                    if (data !== undefined) {
-                        this.socket.emit('join-room', {room: data, nickname: this.username})
-                    }
-                }
-            );
-        })
-        
-    }  
+          dialogRef.afterClosed().subscribe(
+              (data) => {
+                  console.log("Dialog output:", data);
+                  if (data !== undefined) {
+                      this.socket.emit('join-room', {room: data, nickname: this.username})
+                  }
+              }
+          );
+      })
+  }
+  
+  /**
+   * Función para mostrar contraseña al crear salas
+   */
+  public togglePass() {
+    this.showPass = !this.showPass;
+  }
+
+  /**
+   * Función utilizada para silenciar a otros usuarios
+   */
+  public muteUser(name: string) {
+    if (confirm("Do you want to mute " + name + "?")) {
+      console.log("Has silenciado a " + name);
+      //this.socket.emit('mute-user', {myUser: this.username, mutedUser: name});
+    }
+    
+  }
 }
 
 // PROXIMO A HACER: CREAR NUEVAS SALAS. GESTIONAR SALAS PRIVADAS

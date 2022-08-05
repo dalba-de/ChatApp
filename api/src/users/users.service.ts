@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateStatusDto } from "./dto/update-status.dto";
+import { UpdateMutesDto } from "./dto/update-mutes.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, UpdateResult } from "typeorm";
 import { User } from "./entities/user.entity";
@@ -22,6 +24,10 @@ export class UsersService {
     return await this.usersRepository.findOne({where: {name: name}});
   }
 
+  async findBySocket(socket) {
+      return await this.usersRepository.findOne({where: {socket: socket}});
+  }
+
   async findOne(id: number) {
     return this.usersRepository.findOne(id);
   }
@@ -34,7 +40,15 @@ export class UsersService {
     return await this.usersRepository.update(updateUserDto.id, updateUserDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async updateStatus(updateStatusDto: UpdateStatusDto) {
+      return await this.usersRepository.update(updateStatusDto.id, updateStatusDto);
+  }
+
+  // async updateMutes(updateMutesDto: UpdateMutesDto) {
+  //   return await this.usersRepository.update(updateMutesDto.id, updateMutesDto);
+  // }
+
+  async remove(id: number) {
+    return await this.usersRepository.delete(id);
   }
 }

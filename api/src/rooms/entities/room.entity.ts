@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn, ManyToMany, JoinTable } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn, ManyToMany, JoinTable, OneToOne } from "typeorm";
 import { Message } from "../../messages/entities/message.entity";
 import { User } from "../../users/entities/user.entity";
 
@@ -18,6 +18,14 @@ export class Room {
 
     @Column({nullable: true})
     password: string;
+
+    @ManyToOne(() => User, (admin: User) => admin.adminRooms, {
+        eager: true,
+        cascade: true,
+        nullable: true
+    })
+    @JoinColumn()
+    admin: User;
 
     @OneToMany(() => Message, (message) => message.room)
     messages: Message[];
