@@ -75,6 +75,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.logger.log("User created!");
   }
 
+  @SubscribeMessage('update-user')
+  updateUser(client: Socket, data : {nickname : string, id : number}) {
+    let updateUser : UpdateUserDto;
+    updateUser = {
+      id: data.id,
+      socket : client.id,
+      online: true
+    }
+    this.usersService.updateUser(updateUser);
+    this.wss.emit('users');
+  }
+
   async createJson(data: any[]): Promise<any[]> {
     let users: any[] = [];
 
@@ -194,17 +206,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
           client.join(rooms[i].name);
       }
       this.wss.emit('joined-room');
-  }
-
-  @SubscribeMessage('update-user')
-  updateUser(client: Socket, data : {nickname : string, id : number}) {
-    let updateUser : UpdateUserDto;
-    updateUser = {
-      id: data.id,
-      socket : client.id,
-      online: true
-    }
-    this.usersService.updateUser(updateUser);
   }
 
   @SubscribeMessage('chatToServer')
