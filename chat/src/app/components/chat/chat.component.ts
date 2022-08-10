@@ -24,8 +24,10 @@ export class ChatComponent implements OnInit {
   showPass: boolean = false;
   privateGroup: boolean = false;
   password: string = '';
+  mutedUsers: string[] = [];
 
   //users: string[] = [];
+  myuser: any = [];
   users: any = [];
   allUsers: any = [];
   realUsers: number = 0;
@@ -66,6 +68,17 @@ export class ChatComponent implements OnInit {
       }
     })
 
+    // Obtenemos los usuarios a los que tenemos muteados
+    this.myuser = [];
+    this.mutedUsers = [];
+    this.apiService.getUserByName(this.username).subscribe((result) => {
+      this.myuser = result;
+      this.mutedUsers = this.myuser.mutes;
+      if (this.mutedUsers === null)
+        this.mutedUsers = [];
+      console.log(this.mutedUsers)
+    })
+
     // Cuando se conecta el socket
     this.socket.on('connect', () => {
       let flag : number = 0;
@@ -98,6 +111,17 @@ export class ChatComponent implements OnInit {
           this.socket.emit('rejoin-room', {nickname: this.username});
         }
       })
+
+      // Obtenemos los usuarios a los que tenemos muteados
+      this.myuser = [];
+      this.mutedUsers = [];
+      this.apiService.getUserByName(this.username).subscribe((result) => {
+        this.myuser = result;
+        this.mutedUsers = this.myuser.mutes;
+        if (this.mutedUsers === null)
+          this.mutedUsers = [];
+        console.log(this.mutedUsers)
+    })
     })
 
     // Funcion externa para unirle a la sala general una vez que se crea el usuario.
@@ -120,6 +144,20 @@ export class ChatComponent implements OnInit {
           if (this.allUsers[i].online)
             this.realUsers++;
         }
+      })
+    })
+
+    // Salta cada vez que muteamos a un usuario,
+    // obteniendo la lista de usuarios.
+    this.socket.on('muted-user', () => {
+      this.myuser = [];
+      this.mutedUsers = [];
+      this.apiService.getUserByName(this.username).subscribe((result) => {
+        this.myuser = result;
+        this.mutedUsers = this.myuser.mutes;
+        if (this.mutedUsers === null)
+          this.mutedUsers = [];
+        console.log(this.mutedUsers)
       })
     })
 
@@ -292,11 +330,20 @@ name: string	: string */
   public muteUser(name: string) {
     if (confirm("Do you want to mute " + name + "?")) {
       console.log("Has silenciado a " + name);
-      //this.socket.emit('mute-user', {myUser: this.username, mutedUser: name});
+      this.socket.emit('mute-user', {myUser: this.username, mutedUser: name});
     }
-    
+  }
+
+  /**
+   * Función utilizada para desilenciar a un usuario silenciado
+   */
+  public unmuteUser(name: string) {
+    if (confirm("Do you want to unmute " + name + "?")) {
+      console.log("Has desilenciado a " + name);
+      this.socket.emit('unmute-user', {myUser: this.username, unmutedUser: name});
+    }
   }
 }
 
-// PROXIMO A HACER: CREAR NUEVAS SALAS. GESTIONAR SALAS PRIVADAS
-
+// TODO: CUANDO SE MUTEA A UN USUARIO, DESAPARECE LA SALA PRIVADA Y NO PUEDO LEER SUS MENSAJES
+// CAMBIAR O ELIMINAR LA CONTRASEÑA DE ACCESO AL CANAL

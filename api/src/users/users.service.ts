@@ -44,9 +44,9 @@ export class UsersService {
       return await this.usersRepository.update(updateStatusDto.id, updateStatusDto);
   }
 
-  // async updateMutes(updateMutesDto: UpdateMutesDto) {
-  //   return await this.usersRepository.update(updateMutesDto.id, updateMutesDto);
-  // }
+  async updateMutes(updateMutesDto: UpdateMutesDto) {
+    return await this.usersRepository.update(updateMutesDto.id, updateMutesDto);
+  }
 
   async remove(id: number) {
     return await this.usersRepository.delete(id);

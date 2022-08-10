@@ -107,37 +107,56 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.wss.emit('joined-room');
   }
 
-  // async createArray(data: any[]): Promise<any[]> {
-  //   let users: any[] = [];
+  async createArray(data: any[]): Promise<any[]> {
+    let users: any[] = [];
 
-  //   if (!data)
-  //     for (let i in data) {
-  //       users.push(data[i].name);
-  //     }
-  //   else
-  //     users = data;
+    if (!data)
+      for (let i in data) {
+        users.push(data[i].name);
+      }
+    else
+      users = data;
     
-  //   return users;
-  // }
+    return users;
+  }
 
-  // @SubscribeMessage('mute-user')
-  // async muteUser(client: Socket, data : {myUser: string, mutedUser: string}) {
-  //   let user: any = await this.usersService.findByName(data.myUser);
-  //   console.log(user);
-  //   let otherUser: any = await this.usersService.findByName(data.mutedUser);
+  @SubscribeMessage('mute-user')
+  async muteUser(client: Socket, data : {myUser: string, mutedUser: string}) {
+    let user: any = await this.usersService.findByName(data.myUser);
+    let otherUser: any = await this.usersService.findByName(data.mutedUser);
 
-  //   let users: any[] = await this.createArray(user.mutes);
-  //   if (users.indexOf(otherUser.name) > -1)
-  //     return ;
-  //   users.push(otherUser.name);
+    let users: any[] = await this.createArray(user.mutes);
+    if (users.indexOf(otherUser.name) > -1)
+      return ;
+    users.push(otherUser.name);
 
-  //   let updateMutes: UpdateMutesDto;
-  //   updateMutes = {
-  //     id: user.id,
-  //     mutes: users
-  //   }
-  //   await this.usersService.updateMutes(updateMutes);
-  // }
+    let updateMutes: UpdateMutesDto;
+    updateMutes = {
+      id: user.id,
+      mutes: users
+    }
+    await this.usersService.updateMutes(updateMutes);
+    this.wss.emit('muted-user');
+  }
+
+  @SubscribeMessage('unmute-user')
+  async unmuteUser(client: Socket, data :  {myUser: string, unmutedUser: string}) {
+    let user: any = await this.usersService.findByName(data.myUser);
+    
+    let users: string[] = user.mutes;
+    const index = users.indexOf(data.unmutedUser, 0);
+    if (index > -1) {
+      users.splice(index, 1);
+    }
+
+    let updateMutes: UpdateMutesDto;
+    updateMutes = {
+      id: user.id,
+      mutes: users
+    }
+    await this.usersService.updateMutes(updateMutes);
+    this.wss.emit('muted-user');
+  }
 
   @SubscribeMessage('rejoin-room')
   async rejoinRoom(client: Socket, data : {nickname: string}) {

@@ -34,10 +34,10 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
-  // @Patch('/updateMutes')
-  // updateUsers(@Body() updateMutesDto: UpdateMutesDto) {
-  //   return this.usersService.updateMutes(updateMutesDto);
-  // }
+  @Patch('/updateMutes')
+  updateUsers(@Body() updateMutesDto: UpdateMutesDto) {
+    return this.usersService.updateMutes(updateMutesDto);
+  }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {

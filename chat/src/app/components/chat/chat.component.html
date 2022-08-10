@@ -30,9 +30,11 @@
           </ng-template>
           <mat-list class="conversations">
             <mat-list-item *ngFor="let user of users">
-              <mat-icon (click)="userToUser(user.name)" *ngIf="user.online" matListIcon style="font-size: 15px; position: relative; margin-top: 8px;">person</mat-icon>
-              <p (click)="userToUser(user.name)" *ngIf="user.online" class="letters">{{user.name}}</p>
-              <mat-icon (click)="muteUser(user.name)" matTooltip="Mute User" style="font-size: 15px; position: absolute; margin-top: 8px; left: 200px;">voice_over_off</mat-icon>
+              <mat-icon *ngIf="user.online" matListIcon style="font-size: 15px; position: relative; margin-top: 8px;">person</mat-icon>
+              <p (click)="userToUser(user.name)" matTooltip="Start a private chat with {{user.name}}" *ngIf="user.online && mutedUsers.indexOf(user.name) === -1" class="letters">{{user.name}}</p>
+              <mat-icon (click)="muteUser(user.name)" *ngIf="mutedUsers.indexOf(user.name) === -1" matTooltip="Mute User" style="font-size: 15px; position: absolute; margin-top: 8px; left: 200px;">voice_over_off</mat-icon>
+              <p style="color: grey;" matTooltip="This user is muted" *ngIf="user.online && mutedUsers.indexOf(user.name) > -1" class="letters">{{user.name}}</p>
+              <mat-icon (click)="unmuteUser(user.name)" *ngIf="mutedUsers.indexOf(user.name) > -1" matTooltip="Unmute User" style="font-size: 15px; position: absolute; margin-top: 8px; left: 200px;">record_voice_over</mat-icon>
             </mat-list-item>
           </mat-list>
         </mat-tab>

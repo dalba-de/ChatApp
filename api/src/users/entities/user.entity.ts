@@ -16,8 +16,8 @@ export class User {
     @Column()
     online: boolean;
 
-    // @Column('text', { array: true, nullable: true })
-    // mutes: string[]
+    @Column('text', { array: true, nullable: true })
+    mutes: string[]
 
     @OneToMany(() => Message, (message) => message.user)
     messages: Message[];
@@ -28,7 +28,12 @@ export class User {
     @ManyToMany(() => Room, (room: Room) => room.users)
     rooms: Room;
 
-    @ManyToMany(() => User, (user: User) => user.mutes)
-    @JoinTable()
-    mutes: User[]
+    // @ManyToMany(() => User, (user: User) => user.mutes, {
+    //     cascade: true
+    // })
+    // @JoinTable()
+    // muted: User[]
+
+    // @ManyToMany(() => User, (user: User) => user.muted, {})
+    // mutes: User[]
 }
