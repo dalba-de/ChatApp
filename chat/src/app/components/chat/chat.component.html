@@ -131,10 +131,17 @@
         <ion-grid>
           <!-- <ion-row *ngFor="let message of messages[selectedRoom]"> -->
           <ion-row  *ngFor="let message of messages">    
-            <ion-col size="9" *ngIf="message.user.name !== username" class="message"
+            <ion-col size="9" *ngIf="message.user.name !== username && mutedUsers.indexOf(message.user.name) === -1" class="message"
                     [ngClass]="{'my_message': message.user.name === username, 'other_message': message.user.name !== username}">
               <span class="user_name"><strong>{{ message.user.name }}:</strong></span><br>
               <span>{{ message.message }}</span>
+              <div class="time">{{message.time | date:'dd.MM HH:mm'}}</div>
+            </ion-col>
+
+            <ion-col size="9" *ngIf="message.user.name !== username && mutedUsers.indexOf(message.user.name) > -1" class="message"
+                    [ngClass]="{'my_message': message.user.name === username, 'other_message': message.user.name !== username}">
+              <span class="user_name"><strong>{{ message.user.name }}:</strong></span><br>
+              <span>Has silenciado a este usuario, no puedes ver sus mensajes</span>
               <div class="time">{{message.time | date:'dd.MM HH:mm'}}</div>
             </ion-col>
       

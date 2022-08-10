@@ -19,6 +19,9 @@ export class User {
     @Column('text', { array: true, nullable: true })
     mutes: string[]
 
+    @Column('text', { array: true, nullable: true })
+    usersMuteMe: string[];
+
     @OneToMany(() => Message, (message) => message.user)
     messages: Message[];
 

@@ -11,6 +11,7 @@ import { CreateRoomDto } from "./rooms/dto/create-room.dto";
 import { UpdateRoomDto } from "./rooms/dto/update-room.dto";
 import { UpdateStatusDto } from "./users/dto/update-status.dto";
 import { UpdateMutesDto } from "./users/dto/update-mutes.dto";
+import { UpdateMutesToMeDto } from "./users/dto/update-mutes-to-me.dto";
 import { User } from "./users/entities/user.entity";
 
 @WebSocketGateway({ cors: true })
@@ -136,12 +137,25 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       mutes: users
     }
     await this.usersService.updateMutes(updateMutes);
+
+    let usersMuteMe: any [] = await this.createArray(otherUser.usersMuteMe);
+    usersMuteMe.push(user.name);
+
+    let updateMutesToMe: UpdateMutesToMeDto;
+    updateMutesToMe = {
+      id: otherUser.id,
+      usersMuteMe: usersMuteMe
+    }
+    await this.usersService.updateMutesToMe(updateMutesToMe);
+
     this.wss.emit('muted-user');
+    client.broadcast.to(otherUser.socket).emit('user-mute-you');
   }
 
   @SubscribeMessage('unmute-user')
   async unmuteUser(client: Socket, data :  {myUser: string, unmutedUser: string}) {
     let user: any = await this.usersService.findByName(data.myUser);
+    let otherUser: any = await this.usersService.findByName(data.unmutedUser);
     
     let users: string[] = user.mutes;
     const index = users.indexOf(data.unmutedUser, 0);
@@ -155,7 +169,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       mutes: users
     }
     await this.usersService.updateMutes(updateMutes);
+
+    let usersMuteMe: string[] = otherUser.usersMuteMe;
+    const otherIndex = usersMuteMe.indexOf(data.myUser, 0);
+    if (index > -1) {
+      usersMuteMe.splice(index, 1);
+    }
+
+    let updateMutesToMe: UpdateMutesToMeDto;
+    updateMutesToMe = {
+      id: otherUser.id,
+      usersMuteMe: usersMuteMe
+    }
+    await this.usersService.updateMutesToMe(updateMutesToMe);
+
     this.wss.emit('muted-user');
+    client.broadcast.to(otherUser.socket).emit('user-mute-you');
   }
 
   @SubscribeMessage('rejoin-room')

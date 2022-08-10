@@ -25,6 +25,7 @@ export class ChatComponent implements OnInit {
   privateGroup: boolean = false;
   password: string = '';
   mutedUsers: string[] = [];
+  usersMuteMe: string[] = [];
 
   //users: string[] = [];
   myuser: any = [];
@@ -68,7 +69,7 @@ export class ChatComponent implements OnInit {
       }
     })
 
-    // Obtenemos los usuarios a los que tenemos muteados
+    // Obtenemos los usuarios a los que tenemos silenciados
     this.myuser = [];
     this.mutedUsers = [];
     this.apiService.getUserByName(this.username).subscribe((result) => {
@@ -76,7 +77,16 @@ export class ChatComponent implements OnInit {
       this.mutedUsers = this.myuser.mutes;
       if (this.mutedUsers === null)
         this.mutedUsers = [];
-      console.log(this.mutedUsers)
+    })
+
+    // Obtenemos los usuarios que nos tienen silenciados
+    this.myuser = [];
+    this.usersMuteMe = [];
+    this.apiService.getUserByName(this.username).subscribe((result) => {
+      this.myuser = result;
+      this.usersMuteMe = this.myuser.usersMuteMe;
+      if (this.usersMuteMe === null)
+        this.usersMuteMe = [];
     })
 
     // Cuando se conecta el socket
@@ -112,7 +122,7 @@ export class ChatComponent implements OnInit {
         }
       })
 
-      // Obtenemos los usuarios a los que tenemos muteados
+      // Obtenemos los usuarios a los que tenemos silenciados
       this.myuser = [];
       this.mutedUsers = [];
       this.apiService.getUserByName(this.username).subscribe((result) => {
@@ -120,8 +130,17 @@ export class ChatComponent implements OnInit {
         this.mutedUsers = this.myuser.mutes;
         if (this.mutedUsers === null)
           this.mutedUsers = [];
-        console.log(this.mutedUsers)
-    })
+      })
+
+      // Obtenemos los usuarios que nos tienen silenciados
+      this.myuser = [];
+      this.usersMuteMe = [];
+      this.apiService.getUserByName(this.username).subscribe((result) => {
+        this.myuser = result;
+        this.usersMuteMe = this.myuser.usersMuteMe;
+        if (this.usersMuteMe === null)
+          this.usersMuteMe = [];
+      })
     })
 
     // Funcion externa para unirle a la sala general una vez que se crea el usuario.
@@ -147,7 +166,7 @@ export class ChatComponent implements OnInit {
       })
     })
 
-    // Salta cada vez que muteamos a un usuario,
+    // Salta cada vez que silenciamos a un usuario,
     // obteniendo la lista de usuarios.
     this.socket.on('muted-user', () => {
       this.myuser = [];
@@ -158,6 +177,19 @@ export class ChatComponent implements OnInit {
         if (this.mutedUsers === null)
           this.mutedUsers = [];
         console.log(this.mutedUsers)
+      })
+    })
+
+    // Salta cuando un usuario nos silencia,
+    // actualizando la lista.
+    this.socket.on('user-mute-you', () => {
+      this.myuser = [];
+      this.usersMuteMe = [];
+      this.apiService.getUserByName(this.username).subscribe((result) => {
+        this.myuser = result;
+        this.usersMuteMe = this.myuser.usersMuteMe;
+        if (this.usersMuteMe === null)
+          this.usersMuteMe = [];
       })
     })
 
@@ -347,3 +379,4 @@ name: string	: string */
 
 // TODO: CUANDO SE MUTEA A UN USUARIO, DESAPARECE LA SALA PRIVADA Y NO PUEDO LEER SUS MENSAJES
 // CAMBIAR O ELIMINAR LA CONTRASEÑA DE ACCESO AL CANAL
+// GESTIONAR LOS USUARIOS QUE ME BLOQUEAN A MI
