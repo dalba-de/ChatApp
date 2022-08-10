@@ -161,6 +161,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     await this.usersService.updateMutesToMe(updateMutesToMe);
 
     this.wss.emit('muted-user');
+    this.wss.emit('users');
     client.broadcast.to(otherUser.socket).emit('user-mute-you');
   }
 
@@ -196,6 +197,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     await this.usersService.updateMutesToMe(updateMutesToMe);
 
     this.wss.emit('muted-user');
+    this.wss.emit('users');
     client.broadcast.to(otherUser.socket).emit('user-mute-you');
   }
 
