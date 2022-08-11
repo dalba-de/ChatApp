@@ -232,7 +232,7 @@ export class ChatComponent implements OnInit {
 		}
 		else if (msg.sender !== this.username) {
 			this.notificationRoom.push(msg.room);
-			this.playAudio();
+			//this.playAudio();
 		}
   }
 

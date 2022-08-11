@@ -4,6 +4,7 @@ import { UpdateRoomDto } from './dto/update-room.dto';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, UpdateResult } from "typeorm";
 import { Room } from "./entities/room.entity";
+import { threadId } from 'worker_threads';
 
 @Injectable()
 export class RoomsService {
@@ -44,6 +45,6 @@ export class RoomsService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} room`;
+    return this.roomsRepository.delete(id);
   }
 }

@@ -25,6 +25,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
   private logger: Logger = new Logger('ChatGateway');
 
+  /**
+   * Tras arrancar el servidor se crea la sala 'General'
+   */
   async afterInit(server: any) {
     this.logger.log("Initialized!")
 
@@ -42,10 +45,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     }    
   }
 
+  /**
+   * Salta cuando se conecta un usuario
+   */
   handleConnection(client: any, ...args: any[]) {
     this.logger.log("User Connected!");
   }
 
+  /**
+   * Gestiona la desconexión del usuario, actualizando su status a 
+   * offline y mandando el aviso al resto de usuarios
+   */
   async handleDisconnect(client: any) {
     let user: any = await this.usersService.findBySocket(client.id);
     
@@ -59,6 +69,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.logger.log("User Disconnected!")
   }
 
+  /**
+   * Cuando entra un nuevo cliente, crea el usuario, lo añade a 
+   * la base de datos y avisa al resto de usuarios.
+   */
   @SubscribeMessage('set-user')
   async setUser(client: Socket, data : {nickname: string}) {
 
@@ -75,6 +89,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.logger.log("User created!");
   }
 
+  /**
+   * Función utilizada para actualizar el socket y el status de un
+   * cliente ya conocido que vuelve a entrar en el chat
+   */
   @SubscribeMessage('update-user')
   updateUser(client: Socket, data : {nickname : string, id : number}) {
     let updateUser : UpdateUserDto;
@@ -87,6 +105,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.wss.emit('users');
   }
 
+  /**
+   * Función utilizada para crear un Json a partir de un array
+   */
   async createJson(data: any[]): Promise<any[]> {
     let users: any[] = [];
 
@@ -100,6 +121,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     return users;
   }
 
+  /**
+   * Función utilizada cuando el cliente entra en una nueva sala, actualizando
+   * los usuarios de la sala y añadiendo el socket a la misma
+   */
   @SubscribeMessage('join-room')
   async joinRoom(client: Socket, data : {room: string, nickname: string}) {
     let room: any = await this.roomService.findByName(data.room);
@@ -120,6 +145,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.wss.emit('joined-room');
   }
 
+  /**
+   * Función utilizada para crear un array a partir de otro
+   */
   async createArray(data: any[]): Promise<any[]> {
     let users: any[] = [];
 
@@ -133,6 +161,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     return users;
   }
 
+  /**
+   * Función utilizada cuando un cliente decide silenciar a otro
+   * usuario. Actualiza tanto la lista de silenciados por el cliente,
+   * como la lista de gente que me a silenciado a mi.
+   */
   @SubscribeMessage('mute-user')
   async muteUser(client: Socket, data : {myUser: string, mutedUser: string}) {
     let user: any = await this.usersService.findByName(data.myUser);
@@ -165,6 +198,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     client.broadcast.to(otherUser.socket).emit('user-mute-you');
   }
 
+  /**
+   * Función utilizada para desilenciar a un usuario. Actualiza tanto 
+   * la lista de silenciados por el cliente, como la lista de gente 
+   * que me a silenciado a mi.
+   */
   @SubscribeMessage('unmute-user')
   async unmuteUser(client: Socket, data :  {myUser: string, unmutedUser: string}) {
     let user: any = await this.usersService.findByName(data.myUser);
@@ -201,6 +239,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     client.broadcast.to(otherUser.socket).emit('user-mute-you');
   }
 
+  /**
+   * Función utilizada para volver a unirnos a una sala en la que ya
+   * estabamos, despues de actualizar el socket.
+   */
   @SubscribeMessage('rejoin-room')
   async rejoinRoom(client: Socket, data : {nickname: string}) {
       let rooms: any = await this.roomService.findUsersInRoom(data.nickname);
@@ -210,6 +252,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       this.wss.emit('joined-room');
   }
 
+  /**
+   * Función que recibe los mensajes que se mandan al servidor y que
+   * reenvia al resto de clientes.
+   */
   @SubscribeMessage('chatToServer')
   async handleMessage(client: Socket, message: {sender: string, room: string, message: string}) {
     let user : any = await this.usersService.findByName(message.sender);
@@ -226,6 +272,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.wss.to(message.room).emit('chatToClient', {text: message.message, room: message.room, from: message.sender, created: new Date()})
   }
 
+  /**
+   * Función utilizada para gestionar los chats privados entre dos
+   * clientes.
+   */
   @SubscribeMessage('user-to-user')
   async handleUserToUser(client: Socket, data: {myUser: string, otherUser: string}) {
     let other_user : any = await this.usersService.findByName(data.otherUser);
@@ -252,27 +302,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     client.broadcast.to(other_user.socket).emit('joined-room');
   }
 
-//   @SubscribeMessage('create-room')
-//   async createRoom(client: Socket, data : {room: string, myUser: string, password: string}) {
-//     let user: any = await this.usersService.findByName(data.myUser);
-//     let users: any[] = [];
-
-//     users.push({"id": user.id});
-
-//     let newRoom : CreateRoomDto = {
-//         name: data.room,
-//         private: false,
-//         isGroup: true,
-//         password: null,
-//         users: users,
-//         admin: user.id
-//     }
-
-//     await this.roomService.create(newRoom);
-//     client.join(data.room);
-//     this.wss.emit('joined-room');
-//   }
-
+  /**
+   * Función utilizada para crear una nueva sala.
+   */
   @SubscribeMessage('create-room')
   async createRoom(client: Socket, data : {room: string, myUser: string, password: string}) {
     let user: any = await this.usersService.findByName(data.myUser);

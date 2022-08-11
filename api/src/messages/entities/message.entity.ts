@@ -18,7 +18,8 @@ export class Message {
     
     @ManyToOne(() => Room, (room) => room.messages, {
         cascade: true,
-        eager: true
+        eager: true,
+        onDelete: "CASCADE"
     })
     room: Room;
 
