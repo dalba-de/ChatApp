@@ -30,9 +30,13 @@
           </ng-template>
           <mat-list class="conversations">
             <mat-list-item *ngFor="let user of users">
-              <mat-icon (click)="userToUser(user.name)" *ngIf="user.online" matListIcon style="font-size: 15px; position: relative; margin-top: 8px;">person</mat-icon>
-              <p (click)="userToUser(user.name)" *ngIf="user.online" class="letters">{{user.name}}</p>
-              <mat-icon (click)="muteUser(user.name)" matTooltip="Mute User" style="font-size: 15px; position: absolute; margin-top: 8px; left: 200px;">voice_over_off</mat-icon>
+              <mat-icon *ngIf="user.online" matListIcon style="font-size: 15px; position: relative; margin-top: 8px;">person</mat-icon>
+              <p (click)="userToUser(user.name)" matTooltip="Start a private chat with {{user.name}}" *ngIf="user.online && mutedUsers.indexOf(user.name) === -1 && usersMuteMe.indexOf(user.name) === -1" class="letters">{{user.name}}</p>
+              <p style="color: grey;" matTooltip="This user has muted you" *ngIf="user.online && mutedUsers.indexOf(user.name) === -1 && usersMuteMe.indexOf(user.name) > -1" class="letters">{{user.name}}</p>
+              <mat-icon (click)="muteUser(user.name)" *ngIf="user.online && mutedUsers.indexOf(user.name) === -1" matTooltip="Mute User" style="font-size: 15px; position: absolute; margin-top: 8px; left: 200px;">voice_over_off</mat-icon>
+              <p style="color: grey;" matTooltip="You have muted this user" *ngIf="user.online && mutedUsers.indexOf(user.name) > -1 && usersMuteMe.indexOf(user.name) > -1" class="letters">{{user.name}}</p>
+              <p style="color: grey;" matTooltip="You have muted this user" *ngIf="user.online && mutedUsers.indexOf(user.name) > -1 && usersMuteMe.indexOf(user.name) === -1" class="letters">{{user.name}}</p>
+              <mat-icon (click)="unmuteUser(user.name)" *ngIf="user.online && mutedUsers.indexOf(user.name) > -1" matTooltip="Unmute User" style="font-size: 15px; position: absolute; margin-top: 8px; left: 200px;">record_voice_over</mat-icon>
             </mat-list-item>
           </mat-list>
         </mat-tab>
@@ -129,10 +133,24 @@
         <ion-grid>
           <!-- <ion-row *ngFor="let message of messages[selectedRoom]"> -->
           <ion-row  *ngFor="let message of messages">    
-            <ion-col size="9" *ngIf="message.user.name !== username" class="message"
+            <ion-col size="9" *ngIf="message.user.name !== username && mutedUsers.indexOf(message.user.name) === -1 && usersMuteMe.indexOf(message.user.name) === -1" class="message"
                     [ngClass]="{'my_message': message.user.name === username, 'other_message': message.user.name !== username}">
               <span class="user_name"><strong>{{ message.user.name }}:</strong></span><br>
               <span>{{ message.message }}</span>
+              <div class="time">{{message.time | date:'dd.MM HH:mm'}}</div>
+            </ion-col>
+
+            <ion-col size="9" *ngIf="message.user.name !== username && usersMuteMe.indexOf(message.user.name) > -1" class="message"
+                    [ngClass]="{'my_message': message.user.name === username, 'other_message': message.user.name !== username}">
+              <span class="user_name"><strong>{{ message.user.name }}:</strong></span><br>
+              <span>Este usuario te ha silenciado, no puedes ver sus mensajes</span>
+              <div class="time">{{message.time | date:'dd.MM HH:mm'}}</div>
+            </ion-col>
+
+            <ion-col size="9" *ngIf="message.user.name !== username && mutedUsers.indexOf(message.user.name) > -1" class="message"
+                    [ngClass]="{'my_message': message.user.name === username, 'other_message': message.user.name !== username}">
+              <span class="user_name"><strong>{{ message.user.name }}:</strong></span><br>
+              <span>Has silenciado a este usuario, no puedes ver sus mensajes</span>
               <div class="time">{{message.time | date:'dd.MM HH:mm'}}</div>
             </ion-col>
       

@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateMutesDto } from "./dto/update-mutes.dto";
+import { UpdateMutesToMeDto } from "./dto/update-mutes-to-me.dto";
 import { User } from "./entities/user.entity";
 
 @Controller('users')
@@ -34,10 +35,15 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
-  // @Patch('/updateMutes')
-  // updateUsers(@Body() updateMutesDto: UpdateMutesDto) {
-  //   return this.usersService.updateMutes(updateMutesDto);
-  // }
+  @Patch('/updateMutes')
+  updateUsers(@Body() updateMutesDto: UpdateMutesDto) {
+    return this.usersService.updateMutes(updateMutesDto);
+  }
+
+  @Patch('/updateMutesToMe')
+  updateMutesToMe(@Body() updateMutesToMeDto: UpdateMutesToMeDto) {
+    return this.usersService.updateMutesToMe(updateMutesToMeDto);
+  }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {

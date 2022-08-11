@@ -11,6 +11,7 @@ import { CreateRoomDto } from "./rooms/dto/create-room.dto";
 import { UpdateRoomDto } from "./rooms/dto/update-room.dto";
 import { UpdateStatusDto } from "./users/dto/update-status.dto";
 import { UpdateMutesDto } from "./users/dto/update-mutes.dto";
+import { UpdateMutesToMeDto } from "./users/dto/update-mutes-to-me.dto";
 import { User } from "./users/entities/user.entity";
 
 @WebSocketGateway({ cors: true })
@@ -74,6 +75,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.logger.log("User created!");
   }
 
+  @SubscribeMessage('update-user')
+  updateUser(client: Socket, data : {nickname : string, id : number}) {
+    let updateUser : UpdateUserDto;
+    updateUser = {
+      id: data.id,
+      socket : client.id,
+      online: true
+    }
+    this.usersService.updateUser(updateUser);
+    this.wss.emit('users');
+  }
+
   async createJson(data: any[]): Promise<any[]> {
     let users: any[] = [];
 
@@ -107,37 +120,86 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.wss.emit('joined-room');
   }
 
-  // async createArray(data: any[]): Promise<any[]> {
-  //   let users: any[] = [];
+  async createArray(data: any[]): Promise<any[]> {
+    let users: any[] = [];
 
-  //   if (!data)
-  //     for (let i in data) {
-  //       users.push(data[i].name);
-  //     }
-  //   else
-  //     users = data;
+    if (!data)
+      for (let i in data) {
+        users.push(data[i].name);
+      }
+    else
+      users = data;
     
-  //   return users;
-  // }
+    return users;
+  }
 
-  // @SubscribeMessage('mute-user')
-  // async muteUser(client: Socket, data : {myUser: string, mutedUser: string}) {
-  //   let user: any = await this.usersService.findByName(data.myUser);
-  //   console.log(user);
-  //   let otherUser: any = await this.usersService.findByName(data.mutedUser);
+  @SubscribeMessage('mute-user')
+  async muteUser(client: Socket, data : {myUser: string, mutedUser: string}) {
+    let user: any = await this.usersService.findByName(data.myUser);
+    let otherUser: any = await this.usersService.findByName(data.mutedUser);
 
-  //   let users: any[] = await this.createArray(user.mutes);
-  //   if (users.indexOf(otherUser.name) > -1)
-  //     return ;
-  //   users.push(otherUser.name);
+    let users: any[] = await this.createArray(user.mutes);
+    if (users.indexOf(otherUser.name) > -1)
+      return ;
+    users.push(otherUser.name);
 
-  //   let updateMutes: UpdateMutesDto;
-  //   updateMutes = {
-  //     id: user.id,
-  //     mutes: users
-  //   }
-  //   await this.usersService.updateMutes(updateMutes);
-  // }
+    let updateMutes: UpdateMutesDto;
+    updateMutes = {
+      id: user.id,
+      mutes: users
+    }
+    await this.usersService.updateMutes(updateMutes);
+
+    let usersMuteMe: any [] = await this.createArray(otherUser.usersMuteMe);
+    usersMuteMe.push(user.name);
+
+    let updateMutesToMe: UpdateMutesToMeDto;
+    updateMutesToMe = {
+      id: otherUser.id,
+      usersMuteMe: usersMuteMe
+    }
+    await this.usersService.updateMutesToMe(updateMutesToMe);
+
+    this.wss.emit('muted-user');
+    this.wss.emit('users');
+    client.broadcast.to(otherUser.socket).emit('user-mute-you');
+  }
+
+  @SubscribeMessage('unmute-user')
+  async unmuteUser(client: Socket, data :  {myUser: string, unmutedUser: string}) {
+    let user: any = await this.usersService.findByName(data.myUser);
+    let otherUser: any = await this.usersService.findByName(data.unmutedUser);
+    
+    let users: string[] = user.mutes;
+    const index = users.indexOf(data.unmutedUser, 0);
+    if (index > -1) {
+      users.splice(index, 1);
+    }
+
+    let updateMutes: UpdateMutesDto;
+    updateMutes = {
+      id: user.id,
+      mutes: users
+    }
+    await this.usersService.updateMutes(updateMutes);
+
+    let usersMuteMe: string[] = otherUser.usersMuteMe;
+    const otherIndex = usersMuteMe.indexOf(data.myUser, 0);
+    if (index > -1) {
+      usersMuteMe.splice(index, 1);
+    }
+
+    let updateMutesToMe: UpdateMutesToMeDto;
+    updateMutesToMe = {
+      id: otherUser.id,
+      usersMuteMe: usersMuteMe
+    }
+    await this.usersService.updateMutesToMe(updateMutesToMe);
+
+    this.wss.emit('muted-user');
+    this.wss.emit('users');
+    client.broadcast.to(otherUser.socket).emit('user-mute-you');
+  }
 
   @SubscribeMessage('rejoin-room')
   async rejoinRoom(client: Socket, data : {nickname: string}) {
@@ -146,17 +208,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
           client.join(rooms[i].name);
       }
       this.wss.emit('joined-room');
-  }
-
-  @SubscribeMessage('update-user')
-  updateUser(client: Socket, data : {nickname : string, id : number}) {
-    let updateUser : UpdateUserDto;
-    updateUser = {
-      id: data.id,
-      socket : client.id,
-      online: true
-    }
-    this.usersService.updateUser(updateUser);
   }
 
   @SubscribeMessage('chatToServer')

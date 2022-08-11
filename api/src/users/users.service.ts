@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateStatusDto } from "./dto/update-status.dto";
 import { UpdateMutesDto } from "./dto/update-mutes.dto";
+import { UpdateMutesToMeDto } from "./dto/update-mutes-to-me.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, UpdateResult } from "typeorm";
 import { User } from "./entities/user.entity";
@@ -44,9 +45,13 @@ export class UsersService {
       return await this.usersRepository.update(updateStatusDto.id, updateStatusDto);
   }
 
-  // async updateMutes(updateMutesDto: UpdateMutesDto) {
-  //   return await this.usersRepository.update(updateMutesDto.id, updateMutesDto);
-  // }
+  async updateMutes(updateMutesDto: UpdateMutesDto) {
+    return await this.usersRepository.update(updateMutesDto.id, updateMutesDto);
+  }
+
+  async updateMutesToMe(updateMutesToMeDto: UpdateMutesToMeDto) {
+    return await this.usersRepository.update(updateMutesToMeDto.id, updateMutesToMeDto);
+  }
 
   async remove(id: number) {
     return await this.usersRepository.delete(id);
