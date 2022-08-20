@@ -199,6 +199,8 @@ export class ChatComponent implements OnInit {
     this.socket.on('joined-room', () => {
       this.apiService.getRoomsbyUser(this.username).subscribe((result) =>{
         this.rooms = result
+        if (this.selectedRoom !== '')
+          this.updateSelectedRoom(this.selectedRoom);
       })
     })
 
@@ -417,7 +419,7 @@ export class ChatComponent implements OnInit {
 // TODO: 
 // CUANDO SE MUTEA A UN USUARIO, DESAPARECE LA SALA PRIVADA Y NO PUEDO LEER SUS MENSAJES ---> HECHO!
 // AÑADIR BANEOS ---> HECHO!
-// ACTUALIZAR USUARIOS EN UNA SALA CUANDO ENTRAN OTROS USUARIOS 
+// ACTUALIZAR USUARIOS EN UNA SALA CUANDO ENTRAN OTROS USUARIOS ---> HECHO!
 // CAMBIAR O ELIMINAR LA CONTRASEÑA DE ACCESO AL CANAL
 // GESTIONAR QUE LOS USUARIOS QUIERAN ABANDONAR UNA SALA
 // GESTIONAR LOS USUARIOS QUE ME BLOQUEAN A MI ---> HECHO!
