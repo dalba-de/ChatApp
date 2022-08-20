@@ -13,7 +13,7 @@
           <mat-list class="conversations">
             <mat-list-item *ngFor="let room of rooms" (click)="updateSelectedRoom(room.name)">
               <mat-icon matListIcon style="font-size: 15px;" *ngIf="room.isGroup && !room.private">public</mat-icon>
-              <mat-icon matListIcon style="font-size: 15px;" *ngIf="!room.isGroup">whatsapp</mat-icon>
+              <mat-icon matListIcon style="font-size: 15px;" *ngIf="!room.isGroup">supervisor_account</mat-icon>
               <mat-icon matListIcon style="font-size: 15px;" *ngIf="room.isGroup && room.private">lock</mat-icon>
               <mat-icon class="icon_display" *ngIf="isInArray(room.name)">notifications</mat-icon>
               <p class="letters" *ngIf="room.name == selectedRoom && room.isGroup"><strong>{{room.name}}</strong></p>
@@ -140,18 +140,12 @@
               <div class="time">{{message.time | date:'dd.MM HH:mm'}}</div>
             </ion-col>
 
-            <ion-col size="9" *ngIf="message.user.name !== username && usersMuteMe.indexOf(message.user.name) > -1" class="message"
-                    [ngClass]="{'my_message': message.user.name === username, 'other_message': message.user.name !== username}">
-              <span class="user_name"><strong>{{ message.user.name }}:</strong></span><br>
+            <ion-col offset="4" size="4" *ngIf="message.user.name !== username && usersMuteMe.indexOf(message.user.name) > -1" class="message mute_message">
               <span>Este usuario te ha silenciado, no puedes ver sus mensajes</span>
-              <div class="time">{{message.time | date:'dd.MM HH:mm'}}</div>
             </ion-col>
 
-            <ion-col size="9" *ngIf="message.user.name !== username && mutedUsers.indexOf(message.user.name) > -1" class="message"
-                    [ngClass]="{'my_message': message.user.name === username, 'other_message': message.user.name !== username}">
-              <span class="user_name"><strong>{{ message.user.name }}:</strong></span><br>
+            <ion-col offset="4" size="4" *ngIf="message.user.name !== username && mutedUsers.indexOf(message.user.name) > -1" class="message mute_message">
               <span>Has silenciado a este usuario, no puedes ver sus mensajes</span>
-              <div class="time">{{message.time | date:'dd.MM HH:mm'}}</div>
             </ion-col>
       
             <ion-col offset="3" size="9" *ngIf="message.user.name === username" class="message"

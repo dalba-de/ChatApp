@@ -291,14 +291,14 @@ export class ChatComponent implements OnInit {
 
 	/**
 	 * Función utilizada para mostrar correctamente el nombre de los chats privados
-name: string	: string */
+  name: string	: string */
 	public splitName(name: string): string {
 		let roomname: string = name.replace(this.username, '');
 		return(roomname);
 	}
 
 	/**
-	 * Reproduce un fichero de audio
+	 * Reproduce un fichero de audio (DEPRECATED)
 	 */
 	public playAudio() {
     let audio = new Audio();

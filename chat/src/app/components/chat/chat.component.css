@@ -132,7 +132,7 @@ section .mat-list .mat-list-avatar{
     color: #1e2023;
 }
 .other_message {
-    background-color: lightgrey !important;
+    background-color: lightblue !important;
     color: #ffffff !important;
 }
 .other_message .other_message .time {
@@ -140,6 +140,9 @@ section .mat-list .mat-list-avatar{
 }
 .other_message .user_name {
     color: #1e2023;
+}
+.mute_message {
+    color: lightgray
 }
 .time {
     float: right;
