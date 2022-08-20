@@ -7,6 +7,7 @@ import { IonContent } from "@ionic/angular";
 import { Room } from "./room";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { CourseDialogComponent } from '../course-dialog/course-dialog.component';
+import { MatTabGroup } from "@angular/material/tabs";
 
 @Component({
   selector: 'app-chat',
@@ -196,6 +197,7 @@ export class ChatComponent implements OnInit {
     // Salta cada vez que nos unimos a una nueva sala,
     // actualizando la lista de salas.
     this.socket.on('joined-room', () => {
+      console.log("joined room llamado");
       this.apiService.getRoomsbyUser(this.username).subscribe((result) =>{
         this.rooms = result
       })
@@ -255,8 +257,6 @@ export class ChatComponent implements OnInit {
         this.room = result;
         this.usersInRoom = this.room.users.length;
 				this.usersInRoomArr = this.room.users;
-        console.log(this.usersInRoomArr)
-        console.log(this.room);
 				if (this.room.isGroup)
 					this.showRoom = name;
 				else
@@ -273,9 +273,10 @@ export class ChatComponent implements OnInit {
 	/**
 	 * Emite un aviso al gateway cuando se intenta un chat privado
 	 */
-    userToUser(user: string) {
+    userToUser(user: string, tabGroup: MatTabGroup) {
         if (confirm("Do you want to start a chat with " + user + "?")) {
-            this.socket.emit('user-to-user', {myUser: this.username, otherUser: user});
+          this.goToNextTabIndex(tabGroup);
+          this.socket.emit('user-to-user', {myUser: this.username, otherUser: user});
         }
     }
 
@@ -373,9 +374,20 @@ export class ChatComponent implements OnInit {
       this.socket.emit('unmute-user', {myUser: this.username, unmutedUser: name});
     }
   }
+
+  /**
+   *  Función utilizada para cambiar de pestaña
+   */
+  private goToNextTabIndex(tabGroup: MatTabGroup) {
+    if (!tabGroup || !(tabGroup instanceof MatTabGroup)) return;
+
+    const tabCount = tabGroup._tabs.length;
+    tabGroup.selectedIndex = (tabGroup.selectedIndex! + 1) % tabCount;
+  }
 }
 
-// TODO: CUANDO SE MUTEA A UN USUARIO, DESAPARECE LA SALA PRIVADA Y NO PUEDO LEER SUS MENSAJES
+// TODO: 
+// CUANDO SE MUTEA A UN USUARIO, DESAPARECE LA SALA PRIVADA Y NO PUEDO LEER SUS MENSAJES ---> HECHO!
 // CAMBIAR O ELIMINAR LA CONTRASEÑA DE ACCESO AL CANAL
 // GESTIONAR QUE LOS USUARIOS QUIERAN ABANDONAR UNA SALA
 // GESTIONAR LOS USUARIOS QUE ME BLOQUEAN A MI ---> HECHO!

@@ -312,8 +312,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
         admin: null
     }
     this.roomService.create(newRoom);
-    client.emit('joined-room');
-    client.broadcast.to(other_user.socket).emit('joined-room');
+    //client.emit('joined-room');
+    this.wss.emit('joined-room');
+    // client.broadcast.to(other_user.socket).emit('joined-room');
   }
 
   /**
