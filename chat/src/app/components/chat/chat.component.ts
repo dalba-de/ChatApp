@@ -197,11 +197,27 @@ export class ChatComponent implements OnInit {
     // Salta cada vez que nos unimos a una nueva sala,
     // actualizando la lista de salas.
     this.socket.on('joined-room', () => {
-      console.log("joined room llamado");
       this.apiService.getRoomsbyUser(this.username).subscribe((result) =>{
         this.rooms = result
       })
     })
+
+    // Salta cuando un usuario ha sido baneado de una sala,
+    // actualizando la sala en la que estamos
+    this.socket.on('ban-user-room', (data) => {
+      this.apiService.getRoomsbyUser(this.username).subscribe((result) =>{
+        this.rooms = result
+      })
+      if (this.selectedRoom === data.room && data.user !== this.username)
+        this.updateSelectedRoom(data.room)
+      else if (this.selectedRoom === data.room && data.user === this.username) {
+        this.updateSelectedRoom('General');
+        window.alert("You have been baned from " + data.room);
+      }
+        
+    })
+
+
 
     // Salta cuando se recibe un nuevo mensaje del servidor
     this.socket.on('chatToClient', (msg) => {
@@ -389,13 +405,19 @@ export class ChatComponent implements OnInit {
     console.log("test1");
   }
 
-  public test2() {
-    console.log("test2");
+  /**
+   * Función utilizada para banear usuarios
+   */
+  public banUser(user: string, room: string) {
+    if (confirm("Do you want to ban " + user + "?"))
+      this.socket.emit('ban-user', {user: user, room: room})
   }
 }
 
 // TODO: 
 // CUANDO SE MUTEA A UN USUARIO, DESAPARECE LA SALA PRIVADA Y NO PUEDO LEER SUS MENSAJES ---> HECHO!
+// AÑADIR BANEOS ---> HECHO!
+// ACTUALIZAR USUARIOS EN UNA SALA CUANDO ENTRAN OTROS USUARIOS 
 // CAMBIAR O ELIMINAR LA CONTRASEÑA DE ACCESO AL CANAL
 // GESTIONAR QUE LOS USUARIOS QUIERAN ABANDONAR UNA SALA
 // GESTIONAR LOS USUARIOS QUE ME BLOQUEAN A MI ---> HECHO!

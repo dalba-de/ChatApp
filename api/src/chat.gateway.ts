@@ -150,7 +150,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
    */
   @SubscribeMessage('leave-room')
   async leaveRoom(client: Socket, data : {room: string, nickname: string}) {
-    
+
   }
 
   /**
@@ -323,6 +323,31 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     //client.emit('joined-room');
     this.wss.emit('joined-room');
     // client.broadcast.to(other_user.socket).emit('joined-room');
+  }
+
+  /**
+   * Función utilizada para gestionar el baneo de usuarios
+   */
+  @SubscribeMessage('ban-user')
+  async handleBanUser(client: Socket, data: {user: string, room: string}) {
+    let banUser : any = await this.usersService.findByName(data.user);
+    let banRoom : any = await this.roomService.findByName(data.room);
+    let socketId: Socket = this.wss.sockets.sockets.get(banUser.socket);
+
+    let users: any[] = banRoom.users;
+    const index = users.map(function(e) {return e.name;}).indexOf(data.user);
+    if (index > -1) {
+      users.splice(index, 1)
+    }
+
+    let updateRoom: UpdateRoomDto;
+    updateRoom = {
+      id: banRoom.id,
+      users: users
+    }
+    socketId.leave(banRoom);
+    await this.roomService.updateRoom(updateRoom);
+    this.wss.emit('ban-user-room', {room: data.room, user: data.user});
   }
 
   /**
