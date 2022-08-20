@@ -360,8 +360,7 @@ export class ChatComponent implements OnInit {
    * Función utilizada para silenciar a otros usuarios
    */
   public muteUser(name: string) {
-    if (confirm("Do you want to mute " + name + "?")) {
-      console.log("Has silenciado a " + name);
+    if (confirm("Do you want to mute " + name + "?" + "\n" + "All chats and private messages will be permanently deleted")) {
       this.socket.emit('mute-user', {myUser: this.username, mutedUser: name});
     }
   }
@@ -371,7 +370,6 @@ export class ChatComponent implements OnInit {
    */
   public unmuteUser(name: string) {
     if (confirm("Do you want to unmute " + name + "?")) {
-      console.log("Has desilenciado a " + name);
       this.socket.emit('unmute-user', {myUser: this.username, unmutedUser: name});
     }
   }
@@ -379,5 +377,6 @@ export class ChatComponent implements OnInit {
 
 // TODO: CUANDO SE MUTEA A UN USUARIO, DESAPARECE LA SALA PRIVADA Y NO PUEDO LEER SUS MENSAJES
 // CAMBIAR O ELIMINAR LA CONTRASEÑA DE ACCESO AL CANAL
+// GESTIONAR QUE LOS USUARIOS QUIERAN ABANDONAR UNA SALA
 // GESTIONAR LOS USUARIOS QUE ME BLOQUEAN A MI ---> HECHO!
 // GESTIONAR CUANDO OTRO USUARIO REFRESCA LA PAGINA. DESAPARECEN LOS USUARIOS DE LA LISTA ---> HECHO!

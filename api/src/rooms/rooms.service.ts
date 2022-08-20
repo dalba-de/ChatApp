@@ -44,7 +44,7 @@ export class RoomsService {
     return await this.roomsRepository.save(updateRoomDto);
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return this.roomsRepository.delete(id);
   }
 }

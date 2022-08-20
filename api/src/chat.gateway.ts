@@ -171,6 +171,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     let user: any = await this.usersService.findByName(data.myUser);
     let otherUser: any = await this.usersService.findByName(data.mutedUser);
 
+    let useroption1: string = data.myUser + data.mutedUser;
+    let useroption2: string = data.mutedUser + data.myUser;
+
     let users: any[] = await this.createArray(user.mutes);
     if (users.indexOf(otherUser.name) > -1)
       return ;
@@ -192,6 +195,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       usersMuteMe: usersMuteMe
     }
     await this.usersService.updateMutesToMe(updateMutesToMe);
+
+    let userRooms: any = await this.roomService.findUsersInRoom(data.myUser);
+    let id : number;
+
+    for (let i = 0; i < userRooms.length; i++) {
+      if (userRooms[i].name === useroption1 || userRooms[i].name === useroption2) {
+        id = userRooms[i].id;
+        await this.roomService.remove(id);
+        
+      }
+    }      
 
     this.wss.emit('muted-user');
     this.wss.emit('users');
