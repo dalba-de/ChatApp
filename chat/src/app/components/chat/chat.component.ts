@@ -384,6 +384,14 @@ export class ChatComponent implements OnInit {
     const tabCount = tabGroup._tabs.length;
     tabGroup.selectedIndex = (tabGroup.selectedIndex! + 1) % tabCount;
   }
+
+  public test1() {
+    console.log("test1");
+  }
+
+  public test2() {
+    console.log("test2");
+  }
 }
 
 // TODO: 

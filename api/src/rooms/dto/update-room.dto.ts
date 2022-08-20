@@ -1,9 +1,17 @@
-// import { PartialType } from '@nestjs/mapped-types';
-// import { CreateRoomDto } from './create-room.dto';
-
-// export class UpdateRoomDto extends PartialType(CreateRoomDto) {}
+import { ApiProperty } from "@nestjs/swagger";
 
 export class UpdateRoomDto {
+
+    @ApiProperty({
+        example: '4'
+    })
     id: number;
+
+    @ApiProperty({
+        example: [
+            {"id": 1},
+            {"id": 2}
+        ]
+    })
     users: any[];
 }

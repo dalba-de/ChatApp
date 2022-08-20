@@ -146,6 +146,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   }
 
   /**
+   * Función utilizada para gestionar la salida de los usuarios de una sala
+   */
+  @SubscribeMessage('leave-room')
+  async leaveRoom(client: Socket, data : {room: string, nickname: string}) {
+    
+  }
+
+  /**
    * Función utilizada para crear un array a partir de otro
    */
   async createArray(data: any[]): Promise<any[]> {
