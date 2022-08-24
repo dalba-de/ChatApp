@@ -38,30 +38,36 @@ export class CourseDialogComponent implements OnInit {
   joinRoom(name: string) {
     let room: any;
 
-    this.apiService.getRoomByName(name).subscribe((result) => {
-        room = result;
-        console.log(room)
-        for (let i = 0; i < room.users.length; i++) {
-          if (room.users[i].name === this.username) {
-            window.alert("You are already in the room");
-            this.dialogRef.close();
-            return ;
+    if (this.password === '') {
+      this.apiService.getRoomByName(name).subscribe((result) => {
+          room = result;
+          console.log(room)
+          for (let i = 0; i < room.users.length; i++) {
+            if (room.users[i].name === this.username) {
+              window.alert("You are already in the room");
+              this.dialogRef.close();
+              return ;
+            }
           }
-        }
-        if (room.private) {
-          if (this.password === room.password) {
-            this.dialogRef.close(name);
-            return ;
-          }
-          else {
-            window.alert("Incorrect password, try again!");
-            this.dialogRef.close();
-            return ;
-          }
-        }
-        else
           this.dialogRef.close(name);
-      });
+        });
+    }
+    else {
+      this.apiService.getAuthenticatedRooom(name, this.password)
+      .subscribe(
+        (result) => {
+          room = result;
+          console.log(result);
+          this.dialogRef.close(name);
+        },
+        (error) => {
+          console.error(error);
+          window.alert("Incorrect password, try again!");
+          this.dialogRef.close();
+        }
+      );
+    }
+      
   }
 
   close() {

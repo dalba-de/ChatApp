@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, UpdateResult } from "typeorm";
 import { Room } from "./entities/room.entity";
-import { threadId } from 'worker_threads';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class RoomsService {
@@ -12,7 +12,14 @@ export class RoomsService {
   constructor (@InjectRepository(Room) private roomsRepository : Repository<Room>) {}
 
   async create(createRoomDto: CreateRoomDto) {
-    return await this.roomsRepository.save(createRoomDto);
+    if (createRoomDto.password !== null) {
+      const hashedPassword = await bcrypt.hash(createRoomDto.password, 10);
+      createRoomDto.password = hashedPassword;
+      return await this.roomsRepository.save(createRoomDto);
+    }
+    else{
+      return await this.roomsRepository.save(createRoomDto);
+    }
   }
 
   async findAll() {
@@ -46,5 +53,34 @@ export class RoomsService {
 
   async remove(id: number) {
     return this.roomsRepository.delete(id);
+  }
+
+  public async getAuthenticatedRoom(name: string, plainTextPassword: string) {
+    try {
+      const room = await this.roomsRepository.findOne({where: {name: name}});
+      await this.verifyPasword(plainTextPassword, room.password);
+      return room;
+    } catch (error) {
+      throw new HttpException(
+        'Wrong password provided',
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
+  private async verifyPasword(
+    plainTextPassword: string,
+    hashedPassword: string
+  ) {
+    const isPasswordMatching = await bcrypt.compare(
+      plainTextPassword,
+      hashedPassword,
+    );
+    if (!isPasswordMatching) {
+      throw new HttpException(
+        'Wrong credentials provided',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

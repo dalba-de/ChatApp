@@ -28,6 +28,12 @@ export class RoomsController {
     return this.roomsService.findByName(name);
   }
 
+  @Get(':name/name/:password/password')
+  @ApiResponse({description: 'Return room if authentication not fails'})
+  findAuthenticatedRoom(@Param('name') name: string, @Param('password') password: string) {
+    return this.roomsService.getAuthenticatedRoom(name, password);
+  }
+
   @Get(':name/users')
   @ApiResponse({description: 'Returns all rooms a user is in'})
   findUsersInRoom(@Param('name') name: string) {

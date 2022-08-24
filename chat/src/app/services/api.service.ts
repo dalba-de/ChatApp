@@ -93,4 +93,16 @@ name: string   */
           }
       })
   }
+
+  /**
+   * Devuelve una sala privada si el password es correcto
+   */
+  public getAuthenticatedRooom(name: string, password: string) {
+    return this.httpClient.get(`${this.API_SERVER}/rooms/${name}/name/${password}/password`, {
+      params: {
+          name: name,
+          password: password
+      }
+  })
+  }
 }
