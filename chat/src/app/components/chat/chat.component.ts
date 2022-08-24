@@ -21,6 +21,7 @@ export class ChatComponent implements OnInit {
 
   selectedRoom: string = '';
   showRoom: string = '';
+  adminRoom: string = '';
   notificationRoom: string[] = [];
   showPass: boolean = false;
   privateGroup: boolean = false;
@@ -279,6 +280,11 @@ export class ChatComponent implements OnInit {
 					this.showRoom = name;
 				else
 					this.showRoom = this.splitName(name);
+        
+        if (this.room.admin !== null)
+          this.adminRoom = this.room.admin.name;
+        else
+          this.adminRoom = '';
     })
 
 		// Si existe notificacion en la sala, la elimina

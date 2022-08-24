@@ -86,7 +86,11 @@
       </mat-tab-group>
       
       <mat-list class="members">
-          <h2 class="letters title">Users in group {{showRoom}}</h2>
+          <mat-list-item *ngIf="showRoom !== ''">
+            <mat-icon style="margin-left: 40px;">person</mat-icon>
+            <h2 style="margin-left: 20px;" class="letters title">Users in group {{showRoom}}</h2>
+          </mat-list-item>
+          
           <mat-list-item *ngFor="let user of usersInRoomArr">
             <p class="letters">{{user.name}}</p>
             <button class="fixedbutton" *ngIf="room.admin && room.admin.name === username && user.name !== username" mat-icon-button>
@@ -94,6 +98,25 @@
               <mat-icon (click)="banUser(user.name, showRoom)" style="margin-left: 10px;" matTooltip="Ban User"> cancel_presentation</mat-icon>
             </button>
           </mat-list-item>
+      </mat-list>
+      
+      <mat-list *ngIf="adminRoom === username && room.private">
+        <mat-list-item>
+          <mat-icon style="margin-left: 40px;">settings</mat-icon>
+          <h2 style="margin-left: 20px;" class="letters title">Room Options</h2>
+        </mat-list-item>
+
+        <mat-list-item>
+          <button mat-raised-button color="primary" style="width: 200px;">Change Password</button>
+        </mat-list-item>
+        
+        <mat-list-item>
+          <button mat-raised-button style="width: 200px;">Change Admin</button>
+        </mat-list-item>
+
+        <mat-list-item>
+          <button mat-raised-button color="primary" style="width: 200px;">Delete Channel</button>
+        </mat-list-item>
       </mat-list>
     </mat-card>
   </mat-sidenav>
