@@ -1,6 +1,7 @@
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
+import { MakePublicRoomDto } from "./dto/make-public-room.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, UpdateResult } from "typeorm";
 import { Room } from "./entities/room.entity";
@@ -49,6 +50,10 @@ export class RoomsService {
 
   async updateRoom(updateRoomDto: UpdateRoomDto) {
     return await this.roomsRepository.save(updateRoomDto);
+  }
+
+  async makePublic(makePublicRoomDto: MakePublicRoomDto) {
+    return await this.roomsRepository.save(makePublicRoomDto);
   }
 
   async remove(id: number) {

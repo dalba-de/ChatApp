@@ -420,6 +420,14 @@ export class ChatComponent implements OnInit {
     if (confirm("Do you want to ban " + user + "?"))
       this.socket.emit('ban-user', {user: user, room: room})
   }
+
+  /**
+   * Función utilizada para hacer pública una sala privada
+   */
+  public makePublic(room: string) {
+    if (confirm("Are you sure you want to make the " + room + " room public?"))
+      this.socket.emit('make-public', {room: room});
+  }
 }
 
 // TODO: 

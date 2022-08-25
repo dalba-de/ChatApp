@@ -12,6 +12,7 @@ import { UpdateRoomDto } from "./rooms/dto/update-room.dto";
 import { UpdateStatusDto } from "./users/dto/update-status.dto";
 import { UpdateMutesDto } from "./users/dto/update-mutes.dto";
 import { UpdateMutesToMeDto } from "./users/dto/update-mutes-to-me.dto";
+import { MakePublicRoomDto } from "./rooms/dto/make-public-room.dto";
 import { User } from "./users/entities/user.entity";
 
 @WebSocketGateway({ cors: true })
@@ -382,6 +383,23 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
     await this.roomService.create(newRoom);
     client.join(data.room);
+    this.wss.emit('joined-room');
+  }
+
+  /**
+   * Función utilizada para hacer púbica una sala que era privada
+   */
+  @SubscribeMessage('make-public')
+  async makePublic(client: Socket, data : {room: string}) {
+    let room: any = await this.roomService.findByName(data.room);
+
+    let makePublicRoom : MakePublicRoomDto;
+    makePublicRoom = {
+      id: room.id,
+      private: false,
+      password: null
+    }
+    await this.roomService.makePublic(makePublicRoom);
     this.wss.emit('joined-room');
   }
 }

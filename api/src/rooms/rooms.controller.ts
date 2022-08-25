@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { RoomsService } from './rooms.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
+import { MakePublicRoomDto } from "./dto/make-public-room.dto";
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 
 @Controller('rooms')
@@ -50,6 +51,12 @@ export class RoomsController {
   @ApiResponse({description: 'Update users in room'})
   updateUsers(@Body() updateRoomDto: UpdateRoomDto) {
     return this.roomsService.updateRoom(updateRoomDto);
+  }
+
+  @Patch('/makePublic')
+  @ApiResponse({description: 'Make a room public'})
+  makePublic(@Body() makePublicRoomDto: MakePublicRoomDto) {
+    return this.roomsService.makePublic(makePublicRoomDto);
   }
 
   @Patch(':id')
