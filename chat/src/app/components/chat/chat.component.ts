@@ -308,10 +308,10 @@ export class ChatComponent implements OnInit {
 	 * Crea una nueva sala
 	 */
 	public createNewRoom() {
-		console.log(this.newRoom);
-
-        // this.socket.emit('create-room', {room: this.newRoom, myUser: this.username});
         this.socket.emit('create-room', {room: this.newRoom, myUser: this.username, password: this.password});
+        this.newRoom = '';
+        this.password = '';
+        this.privateGroup = false;
 	}
 
 	/**
