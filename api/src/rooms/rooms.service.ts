@@ -1,6 +1,7 @@
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
+import { UpdatePasswordDto } from "./dto/update-password.dto";
 import { MakePublicRoomDto } from "./dto/make-public-room.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, UpdateResult } from "typeorm";
@@ -46,6 +47,12 @@ export class RoomsService {
 
   update(id: number, updateRoomDto: UpdateRoomDto) {
     return `This action updates a #${id} room`;
+  }
+
+  async updatePassword(updatePasswordDto: UpdatePasswordDto) {
+    const hashedPassword = await bcrypt.hash(updatePasswordDto.password, 10);
+    updatePasswordDto.password = hashedPassword;
+    return await this.roomsRepository.save(updatePasswordDto);
   }
 
   async updateRoom(updateRoomDto: UpdateRoomDto) {

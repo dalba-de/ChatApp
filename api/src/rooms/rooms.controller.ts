@@ -3,6 +3,7 @@ import { RoomsService } from './rooms.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { MakePublicRoomDto } from "./dto/make-public-room.dto";
+import { UpdatePasswordDto } from "./dto/update-password.dto";
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 
 @Controller('rooms')
@@ -57,6 +58,12 @@ export class RoomsController {
   @ApiResponse({description: 'Make a room public'})
   makePublic(@Body() makePublicRoomDto: MakePublicRoomDto) {
     return this.roomsService.makePublic(makePublicRoomDto);
+  }
+
+  @Patch('/changePassword')
+  @ApiResponse({description: 'Change Password'})
+  changePassword(@Body() updatePasswordDto: UpdatePasswordDto) {
+    return this.roomsService.updatePassword(updatePasswordDto);
   }
 
   @Patch(':id')

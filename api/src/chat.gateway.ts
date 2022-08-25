@@ -13,6 +13,7 @@ import { UpdateStatusDto } from "./users/dto/update-status.dto";
 import { UpdateMutesDto } from "./users/dto/update-mutes.dto";
 import { UpdateMutesToMeDto } from "./users/dto/update-mutes-to-me.dto";
 import { MakePublicRoomDto } from "./rooms/dto/make-public-room.dto";
+import { UpdatePasswordDto } from "./rooms/dto/update-password.dto";
 import { User } from "./users/entities/user.entity";
 
 @WebSocketGateway({ cors: true })
@@ -400,6 +401,23 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       password: null
     }
     await this.roomService.makePublic(makePublicRoom);
+    this.wss.emit('joined-room');
+  }
+
+  /**
+   * Función utilizada para actualizar la contraseña de una sala
+   */
+  @SubscribeMessage('change-password')
+  async changePassword(client: Socket, data : {room: string, password: string}) {
+    let room : any = await this.roomService.findByName(data.room);
+
+    let updatePassword: UpdatePasswordDto;
+    updatePassword = {
+      id: room.id,
+      password: data.password
+    }
+
+    await this.roomService.updatePassword(updatePassword);
     this.wss.emit('joined-room');
   }
 }

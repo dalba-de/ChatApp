@@ -7,6 +7,7 @@ import { IonContent } from "@ionic/angular";
 import { Room } from "./room";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { CourseDialogComponent } from '../course-dialog/course-dialog.component';
+import { PasswordDialogComponent } from "../password-dialog/password-dialog.component";
 import { MatTabGroup } from "@angular/material/tabs";
 
 @Component({
@@ -372,6 +373,29 @@ export class ChatComponent implements OnInit {
               }
           );
       })
+  }
+
+  /**
+   * Cambiar password a una sala
+   */
+  public openPasswordDialog() {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+
+    dialogConfig.data = {
+      username: this.username
+    }
+
+    const dialogRef = this.dialog.open(PasswordDialogComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(
+      (data) => {
+        if (data != undefined)
+          this.socket.emit('change-password', {room: this.showRoom, password: data})
+      }
+    )
   }
   
   /**

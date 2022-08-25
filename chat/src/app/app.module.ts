@@ -25,6 +25,7 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatTooltipModule } from "@angular/material/tooltip";
 
 import { CourseDialogComponent } from './components/course-dialog/course-dialog.component';
+import { PasswordDialogComponent } from './components/password-dialog/password-dialog.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -39,7 +40,8 @@ const routes : Routes = [
     AppComponent,
     ShellComponent,
     ChatComponent,
-    CourseDialogComponent
+    CourseDialogComponent,
+    PasswordDialogComponent
   ],
   imports: [
     BrowserModule,
