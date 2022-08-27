@@ -47,7 +47,6 @@ export class CourseDialogComponent implements OnInit {
           for (let i = 0; i < room.users.length; i++) {
             if (room.users[i].name === this.username) {
               this.toast.warning({detail:'You are already in the room', summary: 'Select a different channel', duration: 5000})
-              //window.alert("You are already in the room");
               this.dialogRef.close();
               return ;
             }
@@ -65,7 +64,6 @@ export class CourseDialogComponent implements OnInit {
         },
         (error) => {
           console.error(error);
-          //window.alert("Incorrect password, try again!");
           this.toast.error({detail: 'Incorrect Password', summary: 'Try again', duration: 5000});
           this.dialogRef.close();
         }
