@@ -9,6 +9,7 @@ import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { CourseDialogComponent } from '../course-dialog/course-dialog.component';
 import { PasswordDialogComponent } from "../password-dialog/password-dialog.component";
 import { MatTabGroup } from "@angular/material/tabs";
+import { NgToastService } from "ng-angular-popup";
 
 @Component({
   selector: 'app-chat',
@@ -48,7 +49,7 @@ export class ChatComponent implements OnInit {
   
 
   constructor(private socket : Socket, private apiService : ApiService,
-              private dialog: MatDialog) { }
+              private dialog: MatDialog, private toast: NgToastService) { }
 
   ngOnInit(): void {
 
@@ -216,7 +217,8 @@ export class ChatComponent implements OnInit {
         this.updateSelectedRoom(data.room)
       else if (this.selectedRoom === data.room && data.user === this.username) {
         this.updateSelectedRoom('General');
-        window.alert("You have been baned from " + data.room);
+        //window.alert("You have been baned from " + data.room);
+        this.toast.info({detail: 'Alert!', summary: 'You have been banned from ' + data.room, sticky: true})
       }
         
     })

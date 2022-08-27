@@ -23,6 +23,7 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { MatButtonModule } from "@angular/material/button";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatTooltipModule } from "@angular/material/tooltip";
+import { NgToastModule } from "ng-angular-popup";
 
 import { CourseDialogComponent } from './components/course-dialog/course-dialog.component';
 import { PasswordDialogComponent } from './components/password-dialog/password-dialog.component';
@@ -62,7 +63,8 @@ const routes : Routes = [
     MatDialogModule,
     MatButtonModule,
     MatSlideToggleModule,
-    MatTooltipModule
+    MatTooltipModule,
+    NgToastModule
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent]

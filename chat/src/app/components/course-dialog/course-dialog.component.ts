@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { ApiService } from "../../services/api.service";
+import { NgToastService } from "ng-angular-popup";
 
 @Component({
   selector: 'app-course-dialog',
@@ -21,6 +22,7 @@ export class CourseDialogComponent implements OnInit {
   hiddenItems:any={};
 
   constructor(private apiService: ApiService,
+              private toast: NgToastService,
               private dialogRef: MatDialogRef<CourseDialogComponent>,
               @Inject(MAT_DIALOG_DATA) data) {
                 this.description = data.title;
@@ -44,7 +46,8 @@ export class CourseDialogComponent implements OnInit {
           console.log(room)
           for (let i = 0; i < room.users.length; i++) {
             if (room.users[i].name === this.username) {
-              window.alert("You are already in the room");
+              this.toast.warning({detail:'You are already in the room', summary: 'Select a different channel', duration: 5000})
+              //window.alert("You are already in the room");
               this.dialogRef.close();
               return ;
             }
@@ -62,7 +65,8 @@ export class CourseDialogComponent implements OnInit {
         },
         (error) => {
           console.error(error);
-          window.alert("Incorrect password, try again!");
+          //window.alert("Incorrect password, try again!");
+          this.toast.error({detail: 'Incorrect Password', summary: 'Try again', duration: 5000});
           this.dialogRef.close();
         }
       );
