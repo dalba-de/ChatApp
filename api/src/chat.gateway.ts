@@ -14,6 +14,7 @@ import { UpdateMutesDto } from "./users/dto/update-mutes.dto";
 import { UpdateMutesToMeDto } from "./users/dto/update-mutes-to-me.dto";
 import { MakePublicRoomDto } from "./rooms/dto/make-public-room.dto";
 import { UpdatePasswordDto } from "./rooms/dto/update-password.dto";
+import { UpdateAdminDto } from "./rooms/dto/update-admin.dto";
 import { User } from "./users/entities/user.entity";
 
 @WebSocketGateway({ cors: true })
@@ -41,7 +42,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
             isGroup: true,
             password: null,
             users: null,
-            admin: null
+            admins: null
         }
         this.roomService.create(newRoom);
     }    
@@ -144,6 +145,33 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     }
     await this.roomService.updateRoom(updateRoom);
     client.join(data.room);
+    this.wss.emit('joined-room');
+  }
+
+  /**
+   * Función utilizada para actualizar los administradores de una sala
+   */
+  @SubscribeMessage('update-admin')
+  async updateAdmin(client: Socket, data : {room: string, nicknames: string[]})  {
+    let room: any = await this.roomService.findByName(data.room);
+    let users: any[] = await this.createJson(room.admins);
+
+    for (let i = 0; i < data.nicknames.length; i++) {
+      let user: any = await this.usersService.findByName(data.nicknames[i]);
+
+      users.push({
+        "id": user.id
+      })
+    }
+
+    console.log(users);
+
+    let updateAdmin: UpdateAdminDto;
+    updateAdmin = {
+      id: room.id,
+      admins: users
+    }
+    await this.roomService.updateAdmins(updateAdmin)
     this.wss.emit('joined-room');
   }
 
@@ -319,7 +347,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
         isGroup: false,
         password: null,
         users: users,
-        admin: null
+        admins: null
     }
     this.roomService.create(newRoom);
     //client.emit('joined-room');
@@ -379,8 +407,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
         isGroup: true,
         password: pass,
         users: users,
-        admin: user.id
+        //admin: user.id
+        admins: users
     }
+    console.log(newRoom)
 
     await this.roomService.create(newRoom);
     client.join(data.room);

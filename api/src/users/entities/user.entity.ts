@@ -25,18 +25,12 @@ export class User {
     @OneToMany(() => Message, (message) => message.user)
     messages: Message[];
 
-    @OneToMany(() => Room, (adminRooms: Room) => adminRooms.admin)
-    adminRooms: Room[];
+    // @OneToMany(() => Room, (adminRooms: Room) => adminRooms.admin)
+    // adminRooms: Room[];
 
     @ManyToMany(() => Room, (room: Room) => room.users)
     rooms: Room;
 
-    // @ManyToMany(() => User, (user: User) => user.mutes, {
-    //     cascade: true
-    // })
-    // @JoinTable()
-    // muted: User[]
-
-    // @ManyToMany(() => User, (user: User) => user.muted, {})
-    // mutes: User[]
+    @ManyToMany(() => Room, (room: Room) => room.admins)
+    adminRooms: Room;
 }

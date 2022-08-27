@@ -24,7 +24,7 @@ export class ChatComponent implements OnInit {
 
   selectedRoom: string = '';
   showRoom: string = '';
-  adminRoom: string = '';
+  adminers: any[] = [];
   notificationRoom: string[] = [];
   showPass: boolean = false;
   privateGroup: boolean = false;
@@ -283,11 +283,13 @@ export class ChatComponent implements OnInit {
 					this.showRoom = name;
 				else
 					this.showRoom = this.splitName(name);
-        
-        if (this.room.admin !== null)
-          this.adminRoom = this.room.admin.name;
-        else
-          this.adminRoom = '';
+
+        this.adminers = [];
+        if (this.room.admins.length !== 0) {
+          for (let i = 0; i < this.room.admins.length; i++) {
+            this.adminers.push(this.room.admins[i].name);
+          }
+        }
     })
 
 		// Si existe notificacion en la sala, la elimina
@@ -394,7 +396,7 @@ export class ChatComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(
       (data) => {
-        if (data != undefined)
+        if (data !== undefined)
           this.socket.emit('change-password', {room: this.showRoom, password: data})
       }
     )
@@ -410,14 +412,16 @@ export class ChatComponent implements OnInit {
     dialogConfig.autoFocus = true;
 
     dialogConfig.data = {
-      username: this.username
+      username: this.username,
+      room: this.showRoom
     }
 
     const dialogRef = this.dialog.open(AdminDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
       (data) => {
-        console.log(data);
+        if (data !== undefined)
+          this.socket.emit('update-admin', {room: this.showRoom, nicknames: data})
       }
     )
   }
@@ -484,8 +488,9 @@ export class ChatComponent implements OnInit {
 // ACTUALIZAR USUARIOS EN UNA SALA CUANDO ENTRAN OTROS USUARIOS ---> HECHO!
 // HABRIA QUE ENCRIPTAR LAS CONTRASEÑAS ---> HECHO!
 // CAMBIAR O ELIMINAR LA CONTRASEÑA DE ACCESO AL CANAL ---> HECHO!
-// GESTIONAR QUE LOS USUARIOS QUIERAN ABANDONAR UNA SALA
 // GESTIONAR LOS USUARIOS QUE ME BLOQUEAN A MI ---> HECHO!
 // GESTIONAR CUANDO OTRO USUARIO REFRESCA LA PAGINA. DESAPARECEN LOS USUARIOS DE LA LISTA ---> HECHO!
+// CAMBIAR ADMINISTRADOR DEL CANAL ---> HECHO!
+// GESTIONAR QUE NO PUEDAS SILENCIAR O BANEAR A UN USUARIO QUE ES ADMINISTRADOR
 // SILENCIAR A USUARIOS
-// CAMBIAR ADMINISTRADOR DEL CANAL
+// GESTIONAR QUE LOS USUARIOS QUIERAN ABANDONAR UNA SALA

@@ -4,6 +4,7 @@ import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { MakePublicRoomDto } from "./dto/make-public-room.dto";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
+import { UpdateAdminDto } from "./dto/update-admin.dto";
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 
 @Controller('rooms')
@@ -42,6 +43,12 @@ export class RoomsController {
     return this.roomsService.findUsersInRoom(name);
   }
 
+  @Get(':name/admins')
+  @ApiResponse({description: 'Returns all rooms a user is admin'})
+  findAdminsInRoom(@Param('name') name: string) {
+    return this.roomsService.findAdminsInRoom(name);
+  }
+
   @Get(':id')
   @ApiResponse({description: 'Return room finding it by id'})
   findOne(@Param('id') id: string) {
@@ -52,6 +59,12 @@ export class RoomsController {
   @ApiResponse({description: 'Update users in room'})
   updateUsers(@Body() updateRoomDto: UpdateRoomDto) {
     return this.roomsService.updateRoom(updateRoomDto);
+  }
+
+  @Patch('/updateAdmins')
+  @ApiResponse({description: 'Update users in room'})
+  updateAdmins(@Body() updateAdminDto: UpdateAdminDto) {
+    return this.roomsService.updateAdmins(updateAdminDto);
   }
 
   @Patch('/makePublic')

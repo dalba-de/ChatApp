@@ -93,14 +93,15 @@
           
           <mat-list-item *ngFor="let user of usersInRoomArr">
             <p class="letters">{{user.name}}</p>
-            <button class="fixedbutton" *ngIf="room.admin && room.admin.name === username && user.name !== username" mat-icon-button>
+            <!-- <button class="fixedbutton" *ngIf="room.admin && room.admin.name === username && user.name !== username" mat-icon-button> -->
+            <button class="fixedbutton" *ngIf="adminers.indexOf(username) > -1 && user.name !== username" mat-icon-button>
               <mat-icon (click)="test1()" matTooltip="Mute User">voice_over_off</mat-icon>
               <mat-icon (click)="banUser(user.name, showRoom)" style="margin-left: 10px;" matTooltip="Ban User"> cancel_presentation</mat-icon>
             </button>
           </mat-list-item>
       </mat-list>
       
-      <mat-list *ngIf="adminRoom === username && room.private">
+      <mat-list *ngIf="adminers.indexOf(username) > -1 && room.private">
         <mat-list-item>
           <mat-icon style="margin-left: 40px;">settings</mat-icon>
           <h2 style="margin-left: 20px;" class="letters title">Room Options</h2>

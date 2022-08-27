@@ -3,6 +3,7 @@ import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { UpdatePasswordDto } from "./dto/update-password.dto";
 import { MakePublicRoomDto } from "./dto/make-public-room.dto";
+import { UpdateAdminDto } from "./dto/update-admin.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, UpdateResult } from "typeorm";
 import { Room } from "./entities/room.entity";
@@ -41,6 +42,15 @@ export class RoomsService {
       .getMany();
   }
 
+  async findAdminsInRoom(name) {
+    const findName = name;
+
+    return await this.roomsRepository.createQueryBuilder('rooms')
+    .innerJoin('rooms.admins', 'rooms_admins')
+    .where("rooms_admins.name = :findName", {findName} )
+    .getMany();
+  }
+
   async findOne(id: number) {
     return await this.roomsRepository.findOne(id);
   }
@@ -58,6 +68,10 @@ export class RoomsService {
   async updateRoom(updateRoomDto: UpdateRoomDto) {
     return await this.roomsRepository.save(updateRoomDto);
   }
+
+  async updateAdmins(updateAdminDto: UpdateAdminDto) {
+    return await this.roomsRepository.save(updateAdminDto);
+  } 
 
   async makePublic(makePublicRoomDto: MakePublicRoomDto) {
     return await this.roomsRepository.save(makePublicRoomDto);

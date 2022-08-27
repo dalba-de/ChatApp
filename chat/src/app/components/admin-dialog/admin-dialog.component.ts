@@ -15,6 +15,8 @@ import { ApiService } from "../../services/api.service";
 export class AdminDialogComponent implements OnInit {
 
   username: string = '';
+  room: string = '';
+  adminsRoom: string[] = [];
   form: FormGroup;
   users: any[] = [];
   adminersData: any = [];
@@ -24,12 +26,22 @@ export class AdminDialogComponent implements OnInit {
     private dialogRef: MatDialogRef<AdminDialogComponent>,
     @Inject(MAT_DIALOG_DATA) data) {
       this.username = data.username;
+      this.room = data.room;
       this.form = this.formBuilder.group({
         adminers: new FormArray([])
       });
      }
 
   ngOnInit(): void {
+    this.apiService.getRoomByName(this.room).subscribe((result) => {
+      let temp: any = result;
+
+      for (let i = 0; i < temp.admins.length; i++) {
+        this.adminsRoom.push(temp.admins[i].name);
+      }
+      console.log(this.adminsRoom);
+    });
+    
     this.apiService.getUsers().subscribe((result) => {
       this.adminersData = result;
       this.addCheckboxes();

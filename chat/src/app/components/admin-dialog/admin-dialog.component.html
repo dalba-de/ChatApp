@@ -8,7 +8,8 @@
         <form [formGroup]="form" (ngSubmit)="submit()">
             <mat-list>
                 <mat-list-item formArrayName="adminers" *ngFor="let admin of ordersFormArray.controls; let i = index">
-                    <input type="checkbox" [formControlName]="i"> {{adminersData[i].name}}
+                    <input *ngIf="adminsRoom.indexOf(adminersData[i].name) === -1" type="checkbox" [formControlName]="i">
+                    <p *ngIf="adminsRoom.indexOf(adminersData[i].name) === -1">{{adminersData[i].name}}</p>
                 </mat-list-item>
             </mat-list>
           </form>    

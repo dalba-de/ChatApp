@@ -84,6 +84,17 @@ export class ApiService {
   }
 
   /**
+   * Devuelve las salas de las que el usuario es administrador
+   */
+  public getAdminRooms(name: string) {
+    return this.httpClient.get(`${this.API_SERVER}/rooms/${name}/admins`, {
+      params: {
+        name: name
+      }
+    })
+  }
+
+  /**
    * Devuelve una sala pasando como parámetro el nombre de la sala
 name: string   */
   public getRoomByName(name: string) {

@@ -19,13 +19,13 @@ export class Room {
     @Column({nullable: true})
     password: string;
 
-    @ManyToOne(() => User, (admin: User) => admin.adminRooms, {
-        eager: true,
-        cascade: true,
-        nullable: true
-    })
-    @JoinColumn()
-    admin: User;
+    // @ManyToOne(() => User, (admin: User) => admin.adminRooms, {
+    //     eager: true,
+    //     cascade: true,
+    //     nullable: true
+    // })
+    // @JoinColumn()
+    // admin: User;
 
     @OneToMany(() => Message, (message) => message.room)
     messages: Message[];
@@ -36,4 +36,12 @@ export class Room {
     })
     @JoinTable()
     users : User[]
+
+    @ManyToMany(() => User, (user: User) => user.adminRooms, {
+        eager: true,
+        cascade: true,
+        nullable: true
+    })
+    @JoinTable()
+    admins : User[]
 }

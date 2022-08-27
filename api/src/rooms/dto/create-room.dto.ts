@@ -30,7 +30,9 @@ export class CreateRoomDto {
     users: any[]
 
     @ApiProperty({
-        example: '1'
+        example: [
+            {"id": 1}
+        ]
     })
-    admin: any
+    admins: any[]
 }
