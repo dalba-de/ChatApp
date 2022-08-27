@@ -8,6 +8,7 @@ import { Room } from "./room";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { CourseDialogComponent } from '../course-dialog/course-dialog.component';
 import { PasswordDialogComponent } from "../password-dialog/password-dialog.component";
+import { AdminDialogComponent } from "../admin-dialog/admin-dialog.component";
 import { MatTabGroup } from "@angular/material/tabs";
 import { NgToastService } from "ng-angular-popup";
 
@@ -217,7 +218,6 @@ export class ChatComponent implements OnInit {
         this.updateSelectedRoom(data.room)
       else if (this.selectedRoom === data.room && data.user === this.username) {
         this.updateSelectedRoom('General');
-        //window.alert("You have been baned from " + data.room);
         this.toast.info({detail: 'Alert!', summary: 'You have been banned from ' + data.room, sticky: true})
       }
         
@@ -301,10 +301,10 @@ export class ChatComponent implements OnInit {
 	 * Emite un aviso al gateway cuando se intenta un chat privado
 	 */
     userToUser(user: string, tabGroup: MatTabGroup) {
-        if (confirm("Do you want to start a chat with " + user + "?")) {
-          this.goToNextTabIndex(tabGroup);
-          this.socket.emit('user-to-user', {myUser: this.username, otherUser: user});
-        }
+      if (confirm("Do you want to start a chat with " + user + "?")) {
+        this.goToNextTabIndex(tabGroup);
+        this.socket.emit('user-to-user', {myUser: this.username, otherUser: user});
+      }
     }
 
 	/**
@@ -396,6 +396,28 @@ export class ChatComponent implements OnInit {
       (data) => {
         if (data != undefined)
           this.socket.emit('change-password', {room: this.showRoom, password: data})
+      }
+    )
+  }
+
+  /**
+   * Cambiar de administrador a una sala
+   */
+  public openAdminDialog() {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+
+    dialogConfig.data = {
+      username: this.username
+    }
+
+    const dialogRef = this.dialog.open(AdminDialogComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(
+      (data) => {
+        console.log(data);
       }
     )
   }

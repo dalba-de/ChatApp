@@ -1,0 +1,23 @@
+h2{
+    color: black;
+    text-align: center;
+}
+
+p {
+    text-align: center;
+}
+
+div.t {
+    display: table;
+    width: 200px;
+    height: 70px;
+}
+
+div.u {
+    display: table-cell;
+    width: 100%;
+}
+
+div.u > input {
+    width: 100%;
+}

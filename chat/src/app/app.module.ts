@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule, Routes, RouteReuseStrategy, Router } from "@angular/router";
 import { SocketIoConfig, SocketIoModule } from "ngx-socket-io";
 import { HttpClientModule } from "@angular/common/http";
@@ -27,6 +27,7 @@ import { NgToastModule } from "ng-angular-popup";
 
 import { CourseDialogComponent } from './components/course-dialog/course-dialog.component';
 import { PasswordDialogComponent } from './components/password-dialog/password-dialog.component';
+import { AdminDialogComponent } from './components/admin-dialog/admin-dialog.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -42,11 +43,13 @@ const routes : Routes = [
     ShellComponent,
     ChatComponent,
     CourseDialogComponent,
-    PasswordDialogComponent
+    PasswordDialogComponent,
+    AdminDialogComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     IonicModule.forRoot(),
     RouterModule.forRoot(routes),

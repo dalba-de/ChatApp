@@ -1,0 +1,21 @@
+<body>
+    <script src="../../../../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../../../../node_modules/jquery/dist/jquery.min.js"></script>
+    <h2>Change Adminer</h2>
+
+    <mat-dialog-content>
+        <p>Select a new adminer for your channel</p>
+        <form [formGroup]="form" (ngSubmit)="submit()">
+            <mat-list>
+                <mat-list-item formArrayName="adminers" *ngFor="let admin of ordersFormArray.controls; let i = index">
+                    <input type="checkbox" [formControlName]="i"> {{adminersData[i].name}}
+                </mat-list-item>
+            </mat-list>
+          </form>    
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
+        <button mat-raised-button color="accent" (click)="submit()">Save</button>
+        <button mat-raised-button color="primary" (click)="close()">Close</button>
+    </mat-dialog-actions>
+</body>
