@@ -106,6 +106,17 @@ name: string   */
   }
 
   /**
+   * Elimina una sala pasando como parámetro su id
+   */
+  public deleteRoom(id: number) {
+    return this.httpClient.delete(`${this.API_SERVER}/rooms/${id}`, {
+      params: {
+          id: id
+      }
+    }) 
+  }
+
+  /**
    * Devuelve una sala privada si el password es correcto
    */
   public getAuthenticatedRooom(name: string, password: string) {

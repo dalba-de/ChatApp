@@ -450,4 +450,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     await this.roomService.updatePassword(updatePassword);
     this.wss.emit('joined-room');
   }
+
+  /**
+   * Función utilizada para borrar una sala
+   */
+  @SubscribeMessage('delete-room')
+  async deleteRoom(client: Socket, data: {room: string}) {
+    let room : any = await this.roomService.findByName(data.room);
+
+    this.roomService.remove(room.id);
+    this.wss.emit('deleted-room', {room: data.room});
+  }
 }

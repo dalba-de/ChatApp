@@ -219,10 +219,19 @@ export class ChatComponent implements OnInit {
       else if (this.selectedRoom === data.room && data.user === this.username) {
         this.updateSelectedRoom('General');
         this.toast.info({detail: 'Alert!', summary: 'You have been banned from ' + data.room, sticky: true})
-      }
-        
+      }       
     })
 
+    // Salta cuando una sala es borrada
+    this.socket.on('deleted-room', (data) => {
+      this.apiService.getRoomsbyUser(this.username).subscribe((result) =>{
+        this.rooms = result
+      })
+      if (this.selectedRoom === data.room) {
+        this.updateSelectedRoom('General');
+        this.toast.info({detail: 'Alert!', summary: data.room + ' has been deleted', sticky: true})
+      }
+    })
 
 
     // Salta cuando se recibe un nuevo mensaje del servidor
@@ -479,6 +488,14 @@ export class ChatComponent implements OnInit {
   public makePublic(room: string) {
     if (confirm("Are you sure you want to make the " + room + " room public?"))
       this.socket.emit('make-public', {room: room});
+  }
+
+  /**
+   * Función utilizada para borrar un canal
+   */
+  public deleteChannel(room: string) {
+    if (confirm("Are you sure you want to delete this room?" + "\n" + "All messages will be permanently deleted"))
+      this.socket.emit('delete-room', {room: this.showRoom});
   }
 }
 

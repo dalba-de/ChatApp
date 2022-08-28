@@ -242,3 +242,9 @@ button.fixedbutton {
     position: fixed;
     right: 100px;
 }
+
+p.fixedp {
+    position: fixed;
+    right: 90px;
+    color: rgb(133, 233, 247);
+}

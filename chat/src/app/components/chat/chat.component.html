@@ -92,12 +92,12 @@
           </mat-list-item>
           
           <mat-list-item *ngFor="let user of usersInRoomArr">
-            <p class="letters">{{user.name}}</p>
-            <!-- <button class="fixedbutton" *ngIf="room.admin && room.admin.name === username && user.name !== username" mat-icon-button> -->
-            <button class="fixedbutton" *ngIf="adminers.indexOf(username) > -1 && user.name !== username" mat-icon-button>
+            <p id="users" class="letters">{{user.name}}</p>
+            <button class="fixedbutton" *ngIf="adminers.indexOf(username) > -1 && adminers.indexOf(user.name) === -1 && user.name !== username" mat-icon-button>
               <mat-icon (click)="test1()" matTooltip="Mute User">voice_over_off</mat-icon>
               <mat-icon (click)="banUser(user.name, showRoom)" style="margin-left: 10px;" matTooltip="Ban User"> cancel_presentation</mat-icon>
             </button>
+            <p class="fixedp" *ngIf="adminers.indexOf(user.name) > -1">Admin</p>
           </mat-list-item>
       </mat-list>
       
@@ -120,7 +120,7 @@
         </mat-list-item>
 
         <mat-list-item>
-          <button mat-raised-button color="primary" style="width: 200px;">Delete Channel</button>
+          <button mat-raised-button color="primary" style="width: 200px;" (click)="deleteChannel(showRoom)">Delete Channel</button>
         </mat-list-item>
       </mat-list>
     </mat-card>
