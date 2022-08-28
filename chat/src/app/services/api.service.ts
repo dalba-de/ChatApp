@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { IUser } from "../components/chat/user";
 import { updateRoom } from "../components/chat/updateRoom";
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ export class ApiService {
 
   constructor(private httpClient : HttpClient) { }
 
-  API_SERVER = "http://localhost:3000";
+  API_SERVER = environment.url;
 
   /**
    * Crea un nuevo usuario.

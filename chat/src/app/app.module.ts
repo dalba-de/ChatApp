@@ -11,6 +11,7 @@ import { ChatComponent } from './components/chat/chat.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { environment } from "../environments/environment";
 
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { MatCardModule } from "@angular/material/card";
@@ -29,7 +30,7 @@ import { CourseDialogComponent } from './components/course-dialog/course-dialog.
 import { PasswordDialogComponent } from './components/password-dialog/password-dialog.component';
 import { AdminDialogComponent } from './components/admin-dialog/admin-dialog.component';
 
-const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
+const config: SocketIoConfig = { url: environment.url, options: {} };
 
 const routes : Routes = [
   { path: '', redirectTo: 'shell', pathMatch: 'full' },
