@@ -62,7 +62,7 @@ dirigete en tu navegador a la dirección:
 localhost:8080
 ```
 
-Posteriormnente utiliza las credenciales incluidas en el archivo `api/src/app.module.ts`, o cambialas a otras de tu
+Posteriormente utiliza las credenciales incluidas en el archivo `api/src/app.module.ts`, o cambialas a otras de tu
 elección.
 
 ## Ejemplo
@@ -73,4 +73,7 @@ elección.
 
 - Añadida protección a endpoints en backend, mediante el uso de `Guards`.
 - Añadido endpoint para login, devolución y almacenamiento de `Bearer Token`.
-- Backend completamente documentado mediante el uso de `Swagger UI`
+- Backend completamente documentado mediante el uso de `Swagger UI`. Para ello dirigete a:
+```sh
+localhost:3000/docs
+```
