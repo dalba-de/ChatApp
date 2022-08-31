@@ -73,3 +73,4 @@ elección.
 
 - Añadida protección a endpoints en backend, mediante el uso de `Guards`.
 - Añadido endpoint para login, devolución y almacenamiento de `Bearer Token`.
+- Backend completamente documentado mediante el uso de `Swagger UI`
