@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -6,9 +6,11 @@ import { UpdateMutesDto } from "./dto/update-mutes.dto";
 import { UpdateMutesToMeDto } from "./dto/update-mutes-to-me.dto";
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { User } from "./entities/user.entity";
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller('users')
 @ApiTags('user')
+@UseGuards(AuthGuard('jwt'))
 
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

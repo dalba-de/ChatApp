@@ -1,11 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller('messages')
 @ApiTags('message')
+@UseGuards(AuthGuard('jwt'))
 
 export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}

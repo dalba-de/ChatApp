@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { RoomsService } from './rooms.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
@@ -6,9 +6,11 @@ import { MakePublicRoomDto } from "./dto/make-public-room.dto";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
 import { UpdateAdminDto } from "./dto/update-admin.dto";
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller('rooms')
 @ApiTags('room')
+@UseGuards(AuthGuard('jwt'))
 
 export class RoomsController {
   constructor(private readonly roomsService: RoomsService) {}

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { IUser } from "../components/chat/user";
 import { updateRoom } from "../components/chat/updateRoom";
 import { environment } from 'src/environments/environment';
@@ -8,6 +8,13 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class ApiService {
+
+  token: string = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjE5NjEzNzksImV4cCI6MTY2MjU2NjE3OX0.WACiEZjA1iq1YhB0VthuL92O_Er2lEXg_B27LnPxo3Y';
+
+  headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${this.token}`
+  })
 
   constructor(private httpClient : HttpClient) { }
 
@@ -127,5 +134,16 @@ name: string   */
           password: password
       }
   })
+  }
+
+  /**
+   * Devuelve el token necesario para hacer las llamadas a la api
+   */
+  public getToken(name: string) {
+    return this.httpClient.post(`${this.API_SERVER}/auth/login`, {
+      params: {
+          name: name
+      }
+  }) 
   }
 }

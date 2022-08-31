@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule, Routes, RouteReuseStrategy, Router } from "@angular/router";
 import { SocketIoConfig, SocketIoModule } from "ngx-socket-io";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 
 import { AppComponent } from './app.component';
 import { ShellComponent } from "../app/components/shell/shell.component";
@@ -29,6 +29,9 @@ import { NgToastModule } from "ng-angular-popup";
 import { CourseDialogComponent } from './components/course-dialog/course-dialog.component';
 import { PasswordDialogComponent } from './components/password-dialog/password-dialog.component';
 import { AdminDialogComponent } from './components/admin-dialog/admin-dialog.component';
+
+import { AuthService } from "../app/services/auth.service";
+
 
 const config: SocketIoConfig = { url: environment.url, options: {} };
 
@@ -70,7 +73,10 @@ const routes : Routes = [
     MatTooltipModule,
     NgToastModule
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthService, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

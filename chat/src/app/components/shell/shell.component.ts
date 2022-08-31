@@ -20,6 +20,15 @@ export class ShellComponent implements OnInit {
     if (sessionStorage.getItem('username')) {
       this.username = sessionStorage.getItem('username')!;
     }
+
+    let token: string = sessionStorage.getItem('currentUser')!;
+    if (token === null) {
+        this.apiService.getToken(this.username).subscribe((result : any) => {
+        const res = result.access_token;
+        console.log(res);
+        localStorage.setItem('token', res);
+      })
+    }
   }
 
   onClickSubmit() {
