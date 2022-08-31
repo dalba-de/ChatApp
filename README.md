@@ -77,3 +77,4 @@ elección.
 ```sh
 localhost:3000/docs
 ```
+- Uso de variables de entorno en el frontend. Añade tu url para hacer visible tu aplicación desde el exterior.
